@@ -60,8 +60,8 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 
 <main>
 <div class="card no-print" id="cloudPanel">
-  <h2>Online SAR Storage</h2>
-  <p class="note">This published version can store SAR records and supporting documents centrally using Supabase. Sign in to save/load your work from any device.</p>
+  <h2>Online CAS Storage</h2>
+  <p class="note">This published version can store CAS records and supporting documents centrally using Supabase. Sign in to save/load your work from any device.</p>
   <div class="grid3">
     <div class="field"><label>Email</label><input id="cloudEmail" type="email" placeholder="your-email@example.com"></div>
     <div class="field"><label>Password</label><input id="cloudPassword" type="password" placeholder="Password"></div>
@@ -79,8 +79,8 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 
 
 <div class="card no-print" id="cyclePanel">
-  <h2>Annual SAR Cycles — 5 Cycle Record</h2>
-  <p class="note">Each annual assessment cycle uses the same SAR fields. Select a cycle below; the data entered for each cycle is maintained separately.</p>
+  <h2>Annual CAS Cycles — 5 Cycle Record</h2>
+  <p class="note">Each annual assessment cycle uses the same CAS fields. Select a cycle below; the data entered for each cycle is maintained separately.</p>
   <div id="cycleButtons" class="cycle-buttons"></div>
   <div class="grid3" style="margin-top:12px">
     <div class="field"><label>Current Cycle</label><input id="cycleName" readonly></div>
@@ -555,7 +555,7 @@ function getAuthRedirectUrl(){
   return window.location.origin + window.location.pathname;
 }
 
-async function cloudSignUp(){if(!sb){setCloudStatus("Supabase is not configured yet.");return;}const email=document.getElementById("cloudEmail").value.trim(),password=document.getElementById("cloudPassword").value;if(!email||!password){setCloudStatus("Enter an email and password.");return;}const redirectUrl=getAuthRedirectUrl();const {error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:redirectUrl}});if(error)setCloudStatus(error.message);else setCloudStatus("Account created. Check your email for the confirmation link. You will be returned to this SAR application after confirmation.",true);}
+async function cloudSignUp(){if(!sb){setCloudStatus("Supabase is not configured yet.");return;}const email=document.getElementById("cloudEmail").value.trim(),password=document.getElementById("cloudPassword").value;if(!email||!password){setCloudStatus("Enter an email and password.");return;}const redirectUrl=getAuthRedirectUrl();const {error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:redirectUrl}});if(error)setCloudStatus(error.message);else setCloudStatus("Account created. Check your email for the confirmation link. You will be returned to this CAS application after confirmation.",true);}
 async function cloudSignIn(){if(!sb){setCloudStatus("Supabase is not configured yet.");return;}const email=document.getElementById("cloudEmail").value.trim(),password=document.getElementById("cloudPassword").value;const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)setCloudStatus(error.message);else setCloudStatus("Signed in as "+data.user.email,true);}
 async function cloudSignOut(){if(sb)await sb.auth.signOut();setCloudStatus("Signed out.");}
 
