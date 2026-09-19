@@ -34,6 +34,11 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 .signature{border:1px dashed #9aa9ba;padding:14px;background:#fafcfe}.doc-cell{min-width:190px;background:#fbfdff}.support-doc{font-size:12px!important;padding:4px!important}.doc-status{font-size:11px;color:#287d5a;margin-top:4px;line-height:1.25}
 @media(max-width:800px){.grid,.grid3{grid-template-columns:1fr}nav{top:88px}.card{padding:15px}table{display:block;overflow:auto}}
 @media print{header,nav,.toolbar,.no-print{display:none!important}body{background:#fff}.card{box-shadow:none;border:0;page-break-inside:avoid}main{max-width:none;margin:0}.section{display:block!important}}
+.auth-gate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#17365d,#2b6da3)}
+.auth-card{width:min(460px,100%);background:#fff;border-radius:16px;padding:32px;box-shadow:0 18px 60px #0004}
+.auth-card h1{margin:0 0 6px;color:var(--navy);font-size:28px}.auth-card h2{border:0;margin:0 0 18px;padding:0;font-size:20px}.auth-card p{color:#5b6775;line-height:1.5}.auth-logo{width:64px;height:64px;border-radius:14px;background:#edf3f9;color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;margin-bottom:18px}.auth-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.auth-actions .btn{flex:1;min-width:130px}.auth-status{min-height:22px;margin-top:14px;font-size:13px}.auth-loading{color:#5b6775;text-align:center}
+#appShell{display:none}.auth-user{font-size:13px;color:#287d5a;font-weight:700;margin:8px 0}
+
 
 .cycle-buttons{display:flex;flex-wrap:wrap;gap:8px}
 .cycle-btn{border:1px solid var(--border);background:#f4f7fb;color:var(--navy);border-radius:7px;padding:10px 16px;cursor:pointer;font-weight:700}
@@ -45,6 +50,23 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 </style>
 </head>
 <body>
+<div id="authGate" class="auth-gate">
+  <div class="auth-card">
+    <div class="auth-logo">CAS</div>
+    <h1>Vidyasagar University</h1>
+    <h2>Career Advancement Scheme</h2>
+    <p>Sign in to access the CAS application interface. Your records and supporting documents are stored securely in the connected Supabase account.</p>
+    <div class="field"><label>Email</label><input id="loginEmail" type="email" autocomplete="email" placeholder="your-email@example.com"></div>
+    <div class="field" style="margin-top:12px"><label>Password</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password"></div>
+    <div class="auth-actions">
+      <button class="btn primary" onclick="loginFromGate()">Sign in</button>
+      <button class="btn muted" onclick="signupFromGate()">Create account</button>
+    </div>
+    <div id="authStatus" class="auth-status"></div>
+    <div id="authLoading" class="auth-loading">Checking authentication…</div>
+  </div>
+</div>
+<div id="appShell">
 <header>
   <h1>Career Advancement Scheme (CAS)</h1>
   <p>For the teachers of Vidyasagar University · Annual PBAS / API Assessment</p>
@@ -61,14 +83,10 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 <main>
 <div class="card no-print" id="cloudPanel">
   <h2>Online CAS Storage</h2>
-  <p class="note">This published version can store CAS records and supporting documents centrally using Supabase. Sign in to save/load your work from any device.</p>
-  <div class="grid3">
-    <div class="field"><label>Email</label><input id="cloudEmail" type="email" placeholder="your-email@example.com"></div>
-    <div class="field"><label>Password</label><input id="cloudPassword" type="password" placeholder="Password"></div>
-    <div class="field" style="display:flex;align-items:end;gap:6px;flex-wrap:wrap"><button class="btn primary" onclick="cloudSignIn()">Sign in</button><button class="btn muted" onclick="cloudSignUp()">Create account</button><button class="btn danger" onclick="cloudSignOut()">Sign out</button></div>
-  </div>
-  <div id="cloudStatus" class="doc-status" style="font-size:13px;margin-top:8px">Cloud storage is not configured yet.</div>
-  <div class="toolbar" style="margin-top:8px"><button class="btn success" onclick="saveToCloud()">Save current cycle to cloud</button><button class="btn primary" onclick="loadFromCloud()">Load current cycle from cloud</button><button class="btn muted" onclick="loadAllCloudCycles()">Load all 5 cycles</button></div>
+  <p class="note">Your CAS records and supporting documents are stored centrally using Supabase. You are signed in to this application.</p>
+  <div id="cloudStatus" class="doc-status" style="font-size:13px;margin-top:8px">Checking account…</div>
+  <div class="toolbar" style="margin-top:8px"><button class="btn success" onclick="saveToCloud()">Save current cycle to cloud</button><button class="btn primary" onclick="loadFromCloud()">Load current cycle from cloud</button><button class="btn muted" onclick="loadAllCloudCycles()">Load all 5 cycles</button><button class="btn danger" onclick="cloudSignOut()">Sign out</button></div>
+  <input id="cloudEmail" type="hidden"><input id="cloudPassword" type="hidden">
 </div>
 <div class="toolbar no-print">
   <button class="btn success" onclick="saveData()">Save local backup</button>
@@ -334,6 +352,7 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 </div>
 </section>
 </main>
+</div>
 
 <script>
 // Supabase browser configuration. Replace the placeholders with your project URL and publishable/anon key.
@@ -587,16 +606,44 @@ function clearData(){if(confirm("Clear all five-cycle CAS data saved in this bro
 
 // ---------------- CLOUD STORAGE (SUPABASE) ----------------
 function setCloudStatus(msg, ok=false){const el=document.getElementById("cloudStatus");if(el){el.textContent=msg;el.style.color=ok?"#287d5a":"#b23b3b";}}
-async function requireUser(){if(!sb){setCloudStatus("Supabase is not configured. Add SUPABASE_URL and SUPABASE_ANON_KEY in the deployment configuration.");return null;}const {data,error}=await sb.auth.getUser();if(error||!data.user){setCloudStatus("Please sign in before using cloud storage.");return null;}return data.user;}
-function getAuthRedirectUrl(){
-  // Always return to the page where the app is actually hosted. This prevents
-  // Supabase email confirmation from falling back to localhost.
-  return window.location.origin + window.location.pathname;
+function setAuthStatus(msg, ok=false){const el=document.getElementById("authStatus");if(el){el.textContent=msg;el.style.color=ok?"#287d5a":"#b23b3b";}}
+function getAuthRedirectUrl(){return window.location.origin + window.location.pathname;}
+function showCASInterface(user){
+  document.getElementById("authGate").style.display="none";
+  document.getElementById("appShell").style.display="block";
+  const e=document.getElementById("loginEmail"); if(e) e.value=user?.email||"";
+  const ce=document.getElementById("cloudEmail"); if(ce) ce.value=user?.email||"";
+  setCloudStatus(user?.email?"Signed in as "+user.email:"Signed in",true);
 }
-
-async function cloudSignUp(){if(!sb){setCloudStatus("Supabase is not configured yet.");return;}const email=document.getElementById("cloudEmail").value.trim(),password=document.getElementById("cloudPassword").value;if(!email||!password){setCloudStatus("Enter an email and password.");return;}const redirectUrl=getAuthRedirectUrl();const {error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:redirectUrl}});if(error)setCloudStatus(error.message);else setCloudStatus("Account created. Check your email for the confirmation link. You will be returned to this CAS application after confirmation.",true);}
-async function cloudSignIn(){if(!sb){setCloudStatus("Supabase is not configured yet.");return;}const email=document.getElementById("cloudEmail").value.trim(),password=document.getElementById("cloudPassword").value;const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)setCloudStatus(error.message);else setCloudStatus("Signed in as "+data.user.email,true);}
-async function cloudSignOut(){if(sb)await sb.auth.signOut();setCloudStatus("Signed out.");}
+function showLoginInterface(message=""){
+  document.getElementById("appShell").style.display="none";
+  document.getElementById("authGate").style.display="flex";
+  document.getElementById("authLoading").style.display="none";
+  if(message)setAuthStatus(message,false);
+}
+async function loginFromGate(){
+  if(!sb){setAuthStatus("Supabase is not configured.");return;}
+  const email=document.getElementById("loginEmail").value.trim(),password=document.getElementById("loginPassword").value;
+  if(!email||!password){setAuthStatus("Enter your email and password.");return;}
+  setAuthStatus("Signing in…",true);
+  const {data,error}=await sb.auth.signInWithPassword({email,password});
+  if(error){setAuthStatus(error.message);return;}
+  showCASInterface(data.user);
+}
+async function signupFromGate(){
+  if(!sb){setAuthStatus("Supabase is not configured.");return;}
+  const email=document.getElementById("loginEmail").value.trim(),password=document.getElementById("loginPassword").value;
+  if(!email||!password){setAuthStatus("Enter an email and password to create your account.");return;}
+  if(password.length<6){setAuthStatus("Password must contain at least 6 characters.");return;}
+  setAuthStatus("Creating account…",true);
+  const {error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:getAuthRedirectUrl()}});
+  if(error){setAuthStatus(error.message);return;}
+  setAuthStatus("Account created. Check your email for the confirmation link. After confirmation, return to this page and sign in.",true);
+}
+async function requireUser(){if(!sb){setCloudStatus("Supabase is not configured.");return null;}const {data,error}=await sb.auth.getUser();if(error||!data.user){showLoginInterface("Please sign in to access the CAS application.");return null;}return data.user;}
+async function cloudSignIn(){return loginFromGate();}
+async function cloudSignUp(){return signupFromGate();}
+async function cloudSignOut(){if(sb)await sb.auth.signOut();showLoginInterface("You have been signed out.");}
 
 async function cloudHandleDocument(input){
   const file=input.files&&input.files[0]; if(!file)return;
@@ -679,7 +726,19 @@ async function loadAllCloudCycles(){
   }catch(e){setCloudStatus("Cloud load failed: "+(e.message||e));}
 }
 
-if(sb){sb.auth.getUser().then(({data})=>{if(data.user)setCloudStatus("Signed in as "+data.user.email,true);});sb.auth.onAuthStateChange((_event,session)=>{if(session?.user)setCloudStatus("Signed in as "+session.user.email,true);});}
+if(sb){
+  sb.auth.getSession().then(({data,error})=>{
+    document.getElementById("authLoading").style.display="none";
+    if(error){showLoginInterface("Unable to check your session. Please sign in again.");return;}
+    if(data.session?.user) showCASInterface(data.session.user); else showLoginInterface();
+  });
+  sb.auth.onAuthStateChange((_event,session)=>{
+    if(session?.user) showCASInterface(session.user);
+    else showLoginInterface();
+  });
+}else{
+  document.getElementById("authLoading").textContent="Supabase is not configured. Please configure the application before use.";
+}
 setTimeout(addDocumentActions,800);
 
 function addPartARow(tableId, count){
