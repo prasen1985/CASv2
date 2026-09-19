@@ -209,7 +209,7 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 
 <section id="fiveSummary" class="section">
 <div class="card">
-<h2>SUMMARY</h2><p class="note"><b>Cycle mapping:</b> Cycle 1 = July Y1–June Y2; Cycle 2 = July Y2–June Y3; Cycle 3 = July Y3–June Y4; Cycle 4 = July Y4–June Y5; Cycle 5 = July Y5–June Y6.</p>
+<h2>SUMMARY</h2><p class="note"><b>Cycle mapping:</b> Cycle 1 = July 2016–June 2017; Cycle 2 = July 2017–June 2018; Cycle 3 = July 2018–June 2019; Cycle 4 = July 2019–June 2020; Cycle 5 = July 2020–June 2021.</p>
 <h3>CATEGORY – I</h3>
 <h3>TEACHING, LEARNING AND EVALUATION RELATED ACTIVITIES</h3>
 <table id="summaryCat1">
@@ -549,7 +549,13 @@ function clearData(){if(confirm("Clear all five-cycle SAR data saved in this bro
 // ---------------- CLOUD STORAGE (SUPABASE) ----------------
 function setCloudStatus(msg, ok=false){const el=document.getElementById("cloudStatus");if(el){el.textContent=msg;el.style.color=ok?"#287d5a":"#b23b3b";}}
 async function requireUser(){if(!sb){setCloudStatus("Supabase is not configured. Add SUPABASE_URL and SUPABASE_ANON_KEY in the deployment configuration.");return null;}const {data,error}=await sb.auth.getUser();if(error||!data.user){setCloudStatus("Please sign in before using cloud storage.");return null;}return data.user;}
-async function cloudSignUp(){if(!sb){setCloudStatus("Supabase is not configured yet.");return;}const email=document.getElementById("cloudEmail").value.trim(),password=document.getElementById("cloudPassword").value;if(!email||!password){setCloudStatus("Enter an email and password.");return;}const {error}=await sb.auth.signUp({email,password});if(error)setCloudStatus(error.message);else setCloudStatus("Account created. Check your email if email confirmation is enabled.",true);}
+function getAuthRedirectUrl(){
+  // Always return to the page where the app is actually hosted. This prevents
+  // Supabase email confirmation from falling back to localhost.
+  return window.location.origin + window.location.pathname;
+}
+
+async function cloudSignUp(){if(!sb){setCloudStatus("Supabase is not configured yet.");return;}const email=document.getElementById("cloudEmail").value.trim(),password=document.getElementById("cloudPassword").value;if(!email||!password){setCloudStatus("Enter an email and password.");return;}const redirectUrl=getAuthRedirectUrl();const {error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:redirectUrl}});if(error)setCloudStatus(error.message);else setCloudStatus("Account created. Check your email for the confirmation link. You will be returned to this SAR application after confirmation.",true);}
 async function cloudSignIn(){if(!sb){setCloudStatus("Supabase is not configured yet.");return;}const email=document.getElementById("cloudEmail").value.trim(),password=document.getElementById("cloudPassword").value;const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)setCloudStatus(error.message);else setCloudStatus("Signed in as "+data.user.email,true);}
 async function cloudSignOut(){if(sb)await sb.auth.signOut();setCloudStatus("Signed out.");}
 
