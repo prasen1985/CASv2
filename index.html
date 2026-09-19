@@ -116,6 +116,45 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 <button class="btn primary" onclick="addQual()">+ Add qualification</button>
 <p>I declare that the particulars given above are correct to the best of my knowledge and belief.</p>
 <div class="signature"><b>Signature of the Candidate:</b> Prasenjit Acharya</div>
+
+<div class="card" style="margin-top:18px;">
+<h3>Additional General Information — CAS / Academic Profile</h3>
+<p class="note">The following fields are added from the additional Part A information supplied in the reference document. The earlier General Information fields above are retained.</p>
+<div class="grid">
+<div class="field"><label>1. Date of Appointment</label><input value="1st August 2016"></div>
+<div class="field full"><label>2. For which position and AGP you are applying under CAS</label><input value="Assistant Professor, Stage – III, Grade Pay – INR 8000/-"></div>
+<div class="field"><label>3. Date of eligibility for promotion</label><input value="2nd August 2026 (02-08-2026)"></div>
+</div>
+
+<h4>4. Education Qualification (Graduation onwards)</h4>
+<table id="partA_education">
+<thead><tr><th>Examination</th><th>Name of the University</th><th>Year of Passing</th><th>Marks obtained (%)</th><th>Class/Grade</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><input value="B.Sc"></td><td><input value="Vidyasagar University"></td><td><input value="2006"></td><td><input value="56.63"></td><td><input value="2nd"></td><td><button class="btn danger" onclick="removeRow(this)">Remove</button></td></tr>
+<tr><td><input value="M.Sc"></td><td><input value="Banaras Hindu University"></td><td><input value="2009"></td><td><input value="76.5"></td><td><input value="1st"></td><td><button class="btn danger" onclick="removeRow(this)">Remove</button></td></tr>
+<tr><td><input value="Other Examination"></td><td><input value="CSIR-NET JRF"></td><td><input value="2010"></td><td><input value="NA"></td><td><input value="JRF"></td><td><button class="btn danger" onclick="removeRow(this)">Remove</button></td></tr>
+</tbody></table>
+<button class="btn primary" onclick="addPartARow('partA_education',5)">+ Add education qualification</button>
+
+<h4>5. Research Degree(s)</h4>
+<table id="partA_research">
+<thead><tr><th>Degree</th><th>Name of the University</th><th>Date of Award</th><th>Title of the thesis</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><input value="M.Phil"></td><td><input value="Jawaharlal Nehru University"></td><td><input value="27th July 2012"></td><td><textarea>Seasonal variation of aerosol optical depth and its effect on surface radiative forcing over India</textarea></td><td><button class="btn danger" onclick="removeRow(this)">Remove</button></td></tr>
+<tr><td><input value="PhD"></td><td><input value="Jawaharlal Nehru University"></td><td><input value="3rd May 2017"></td><td><textarea>Weather Response to Crop Residue Burning in north-west India</textarea></td><td><button class="btn danger" onclick="removeRow(this)">Remove</button></td></tr>
+</tbody></table>
+<button class="btn primary" onclick="addPartARow('partA_research',4)">+ Add research degree</button>
+
+<h4>6. Details of teaching/research/academic experience</h4>
+<table id="partA_experience">
+<thead><tr><th>Designation</th><th>Employer</th><th>Period of service</th><th>Scale of Pay</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><input value="Assistant professor"></td><td><input value="Vidyasagar University"></td><td><input value="1st August 2016 to till date"></td><td><input value="Level 11, GP – 7000/-"></td><td><button class="btn danger" onclick="removeRow(this)">Remove</button></td></tr>
+</tbody></table>
+<button class="btn primary" onclick="addPartARow('partA_experience',4)">+ Add experience</button>
+
+<p class="note">I declare that the particulars given above are correct to the best of my knowledge and belief.</p>
+</div>
 </div>
 </section>
 
@@ -209,7 +248,7 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 
 <section id="fiveSummary" class="section">
 <div class="card">
-<h2>SUMMARY</h2><p class="note"><b>Cycle mapping:</b> Cycle 1 = July 2016–June 2017; Cycle 2 = July 2017–June 2018; Cycle 3 = July 2018–June 2019; Cycle 4 = July 2019–June 2020; Cycle 5 = July 2020–June 2021.</p>
+<h2>SUMMARY</h2><p class="note"><b>Cycle mapping:</b> Cycle 1 = July Y1–June Y2; Cycle 2 = July Y2–June Y3; Cycle 3 = July Y3–June Y4; Cycle 4 = July Y4–June Y5; Cycle 5 = July Y5–June Y6.</p>
 <h3>CATEGORY – I</h3>
 <h3>TEACHING, LEARNING AND EVALUATION RELATED ACTIVITIES</h3>
 <table id="summaryCat1">
@@ -542,9 +581,9 @@ function collect(){
  document.querySelectorAll("input,textarea,select").forEach((el,i)=>obj["f"+i]=el.value);
  return obj;
 }
-function saveData(){saveFiveSummary();saveCurrentApi();saveCurrentCycle();updateFiveSummaryTable();updateFiveCycleSummary();alert("All five annual SAR cycles saved in this browser.")}
-function loadData(){try{const s=JSON.parse(localStorage.getItem(CYCLE_KEY)||"null");if(Array.isArray(s)&&s.length===5)cycles=s;loadCycle(currentCycle);updateFiveCycleSummary();alert("Five-cycle SAR data loaded.");}catch(e){alert("No saved five-cycle SAR data found.");}}
-function clearData(){if(confirm("Clear all five-cycle SAR data saved in this browser?")){localStorage.removeItem(CYCLE_KEY);localStorage.removeItem("VU_SAR_2020_21");localStorage.removeItem("VU_SAR_FIVE_SUMMARY");location.reload();}}
+function saveData(){saveFiveSummary();saveCurrentApi();saveCurrentCycle();updateFiveSummaryTable();updateFiveCycleSummary();alert("All five annual CAS cycles saved in this browser.")}
+function loadData(){try{const s=JSON.parse(localStorage.getItem(CYCLE_KEY)||"null");if(Array.isArray(s)&&s.length===5)cycles=s;loadCycle(currentCycle);updateFiveCycleSummary();alert("Five-cycle CAS data loaded.");}catch(e){alert("No saved five-cycle CAS data found.");}}
+function clearData(){if(confirm("Clear all five-cycle CAS data saved in this browser?")){localStorage.removeItem(CYCLE_KEY);localStorage.removeItem("VU_SAR_2020_21");localStorage.removeItem("VU_SAR_FIVE_SUMMARY");location.reload();}}
 
 // ---------------- CLOUD STORAGE (SUPABASE) ----------------
 function setCloudStatus(msg, ok=false){const el=document.getElementById("cloudStatus");if(el){el.textContent=msg;el.style.color=ok?"#287d5a":"#b23b3b";}}
@@ -642,6 +681,18 @@ async function loadAllCloudCycles(){
 
 if(sb){sb.auth.getUser().then(({data})=>{if(data.user)setCloudStatus("Signed in as "+data.user.email,true);});sb.auth.onAuthStateChange((_event,session)=>{if(session?.user)setCloudStatus("Signed in as "+session.user.email,true);});}
 setTimeout(addDocumentActions,800);
+
+function addPartARow(tableId, count){
+  const table=document.getElementById(tableId);
+  const tr=table.insertRow(-1);
+  for(let i=0;i<count;i++){
+    const td=tr.insertCell(i);
+    if(tableId==='partA_research' && i===3) td.innerHTML='<textarea></textarea>';
+    else td.innerHTML='<input>';
+  }
+  const td=tr.insertCell(count);
+  td.innerHTML='<button class="btn danger" onclick="removeRow(this)">Remove</button>';
+}
 </script>
 </body>
 </html>
