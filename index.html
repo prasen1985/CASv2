@@ -21,6 +21,7 @@ h3{color:var(--blue);margin-bottom:10px}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .field label{display:block;font-weight:700;font-size:13px;margin-bottom:5px}
 input,textarea,select{width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:6px;font:inherit;background:#fff}
+input.auto-calculated{background:#f1f5f9;font-weight:700;cursor:not-allowed}
 textarea{min-height:76px;resize:vertical}.full{grid-column:1/-1}
 table{width:100%;border-collapse:collapse;margin:10px 0 18px;font-size:13px}
 th,td{border:1px solid var(--border);padding:7px;vertical-align:top}th{background:#edf3f9;color:var(--navy)}
@@ -111,7 +112,7 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 <h2>APPENDIX - II</h2>
 <div class="grid">
 <div class="field"><label>Session / Year</label><input id="session" value="July 2020 to June 2021"></div>
-<div class="field"><label>Submission instruction</label><input value="To be completed and submitted at the end of each academic year"></div>
+<div class="field"><label>Submission instruction</label><input value="To be completed and submitted at the end of each academic year" readonly></div>
 </div>
 <p class="note">Based on GO : 1197(28)- Edn(U)/ 1U-41/ 11(Pt) dated 31.12.2012, Govt. of W.B.</p>
 </div>
@@ -132,6 +133,8 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 <table id="qualTable"><thead><tr><th>Name of the Course/Summer School</th><th>Place</th><th>Duration</th><th>Sponsoring Agency</th><th>Action</th></tr></thead>
 <tbody><tr><td><input value="Faculty Induction Program"></td><td><input value="Delhi University"></td><td><input value="15th March – 14th April, 2021"></td><td><input value="HRD, GoI"></td><td><button class="btn danger" onclick="removeRow(this)">Remove</button></td></tr></tbody></table>
 <button class="btn primary" onclick="addQual()">+ Add qualification</button>
+<p>I declare that the particulars given above are correct to the best of my knowledge and belief.</p>
+<div class="signature"><b>Signature of the Candidate:</b> Prasenjit Acharya</div>
 
 <div class="card" style="margin-top:18px;">
 <h3>Additional General Information — CAS / Academic Profile</h3>
@@ -170,7 +173,6 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 <button class="btn primary" onclick="addPartARow('partA_experience',4)">+ Add experience</button>
 
 <p class="note">I declare that the particulars given above are correct to the best of my knowledge and belief.</p>
-<div class="signature"><b>Signature of the Candidate:</b> </div>
 </div>
 </div>
 </section>
@@ -181,7 +183,7 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 <p class="note">Please see ‘Guidelines for computing API score’ available in the VU website.</p>
 <h3>CATEGORY 1: TEACHING, LEARNING AND EVALUATION RELATED ACTIVITIES</h3><div class="note"><b>Supporting documents:</b> Upload evidence against each relevant teaching, examination, or innovative-teaching entry.</div>
 <h3>I. Direct Teaching — A. Lectures (L), seminars (S), tutorials (T), practical (P), contact hours (C), field work (F) undertaken taken as percentage of lectures allocated.</h3>
-<table id="teachingTable"><thead><tr><th>Sl.No.</th><th>Course/Paper</th><th>Level</th><th>Mode of Teaching #</th><th>Class allotted as per schedule</th><th>No. of Classes conducted</th><th>% of classes/Practical taken as per record</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<table id="teachingTable"><thead><tr><th>Sl.No.</th><th>Course/Paper</th><th>Level</th><th>Mode of Teaching #</th><th>Class allotted as per schedule</th><th>No. of Classes conducted</th><th>% of classes/Practical taken as per record (Auto)</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
 <button class="btn primary" onclick="addTeaching()">+ Add teaching row</button>
 <div class="grid3">
 <div class="field"><label>API — Classes taken</label><input id="apiClasses" type="number" value="70"></div>
@@ -421,8 +423,43 @@ function docCell(){return `<td class="doc-cell"><input type="file" class="suppor
 function row(cells, action=true, upload=false){return `<tr>${cells.map(x=>`<td>${inp(x)}</td>`).join("")}${upload?docCell():""}${action?'<td><button class="btn danger" onclick="removeRow(this)">Remove</button></td>':''}</tr>`}
 function render(tableId, rows, upload=false){document.querySelector(`#${tableId} tbody`).innerHTML=rows.map(r=>row(r,true,upload)).join("")}
 render("teachingTable",data.teaching,true); render("examTable",data.exams,true); render("innovTable",data.innov,true); render("profTable",data.prof,true); render("papersTable",data.papers,true); render("lecturesTable",data.lectures,true);
+enhanceTeachingRows();
 function addQual(){document.querySelector("#qualTable tbody").insertAdjacentHTML("beforeend",row(["","","",""]));}
-function addTeaching(){document.querySelector("#teachingTable tbody").insertAdjacentHTML("beforeend",row(["","","","","","",""],true,true));}
+function addTeaching(){document.querySelector("#teachingTable tbody").insertAdjacentHTML("beforeend",row(["","","","","","",""],true,true)); enhanceTeachingRows();}
+function extractHours(value){
+  const nums=String(value??"").match(/\d+(?:\.\d+)?/g);
+  if(!nums||!nums.length)return null;
+  return parseFloat(nums[nums.length-1]);
+}
+function calculateTeachingPercent(input){
+  const tr=input.closest("tr");
+  if(!tr)return;
+  const cells=tr.querySelectorAll("td");
+  const allotted=cells[4]?.querySelector("input");
+  const conducted=cells[5]?.querySelector("input");
+  const percent=cells[6]?.querySelector("input");
+  if(!allotted||!conducted||!percent)return;
+  const a=extractHours(allotted.value), c=extractHours(conducted.value);
+  if(a===null||c===null||a<=0){percent.value="";return;}
+  const pct=(c/a)*100;
+  percent.value=Math.round(pct*100)/100;
+}
+function enhanceTeachingRows(){
+  document.querySelectorAll("#teachingTable tbody tr").forEach(tr=>{
+    const cells=tr.querySelectorAll("td");
+    if(cells.length<8)return;
+    const allotted=cells[4]?.querySelector("input");
+    const conducted=cells[5]?.querySelector("input");
+    const percent=cells[6]?.querySelector("input");
+    if(!allotted||!conducted||!percent)return;
+    percent.readOnly=true;
+    percent.classList.add("auto-calculated");
+    allotted.addEventListener("input",()=>calculateTeachingPercent(allotted));
+    conducted.addEventListener("input",()=>calculateTeachingPercent(conducted));
+    calculateTeachingPercent(allotted);
+  });
+}
+
 function addExam(){document.querySelector("#examTable tbody").insertAdjacentHTML("beforeend",row(["","","","",""],true,true));}
 function addInnov(){document.querySelector("#innovTable tbody").insertAdjacentHTML("beforeend",row(["","",""],true,true));}
 function addProf(){document.querySelector("#profTable tbody").insertAdjacentHTML("beforeend",row(["","","","",""] ,true,true));}
