@@ -1,12 +1,12 @@
-# Vidyasagar University SAR Web App v9 — GitHub Pages + Supabase
+# Vidyasagar University CAS Web App v10 — GitHub Pages + Supabase
 
 This version converts the browser-only document upload workflow into an online architecture:
 
-- GitHub Pages hosts the static SAR web app.
+- GitHub Pages hosts the static CAS web app.
 - Supabase Auth handles sign-in.
-- Supabase Postgres stores the five SAR cycles and current-cycle API values.
+- Supabase Postgres stores the five CAS cycles and current-cycle API values.
 - Supabase Storage stores Category I, II and III supporting documents.
-- Authenticated users can access the institution-wide SAR records and supporting documents under the supplied SQL policies.
+- Authenticated users can access the institution-wide CAS records and supporting documents under the supplied SQL policies.
 - The existing five-cycle summary, current-cycle summary/declaration, Category I/II/III document upload controls, and local backup remain in the app.
 
 ## 1. Create Supabase project
@@ -20,7 +20,7 @@ The SQL creates:
 - `sar-documents` private Storage bucket
 - RLS policies for authenticated users
 
-The included policies intentionally allow signed-in users to read the institution-wide SAR records and documents. Upload/update/delete operations are tied to the authenticated user's identity where appropriate.
+The included policies intentionally allow signed-in users to read the institution-wide CAS records and documents. Upload/update/delete operations are tied to the authenticated user's identity where appropriate.
 
 ## 2. Configure the web app
 
@@ -48,7 +48,7 @@ Put `index.html` and `supabase_schema.sql` in your repository. For the live site
 Recommended repository layout:
 
 ```text
-vidyasagar-sar/
+vidyasagar-cas/
   index.html
   README.md
   supabase_schema.sql
@@ -71,8 +71,8 @@ Open the published web app and use **Create account** with an institutional emai
 
 After signing in:
 
-1. Select a SAR cycle.
-2. Enter/edit the SAR data.
+1. Select a CAS cycle.
+2. Enter/edit the CAS data.
 3. Upload supporting documents in Category I, II or III.
 4. Click **Save current cycle to cloud**.
 5. On another computer, sign in with an authorized account and click **Load all 5 cycles** or **Load current cycle from cloud**.
@@ -97,4 +97,12 @@ GitHub Pages
 
 ## 7. Optional next production step
 
-For a university-wide deployment, consider adding an administrator role and making ordinary users edit only their own records while administrators can review all users' SAR submissions. The current SQL is intentionally institution-wide for authenticated read access because the requested workflow is to make uploaded documents available across authorized users.
+For a university-wide deployment, consider adding an administrator role and making ordinary users edit only their own records while administrators can review all users' CAS submissions. The current SQL is intentionally institution-wide for authenticated read access because the requested workflow is to make uploaded documents available across authorized users.
+
+
+### Email confirmation redirect
+The signup flow now explicitly sends Supabase Auth confirmation emails back to the URL where the CAS application is hosted, instead of relying on a localhost fallback. In Supabase, set **Authentication → URL Configuration → Site URL** to the GitHub Pages URL and add the same URL under **Redirect URLs**.
+
+
+## v9.5 Part A update
+The original Part A General Information fields are retained. Additional CAS/academic profile fields from the supplied essential_partA.pdf have been added below them, including appointment/CAS/promotion information, education qualifications, research degrees, and teaching/research/academic experience.
