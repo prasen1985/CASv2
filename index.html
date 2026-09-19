@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vidyasagar University — Career Advancement Scheme (CAS)</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#17365d;--blue:#245b8f;--light:#f4f7fb;--border:#c8d1dc;--green:#287d5a;--red:#b23b3b}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef2f7;color:#1d2733}
+header{background:linear-gradient(135deg,#17365d,#2b6da3);color:#fff;padding:24px 28px;position:sticky;top:0;z-index:10;box-shadow:0 3px 12px #0002}
+header h1{margin:0 0 6px;font-size:24px} header p{margin:0;opacity:.9}
+nav{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:96px;z-index:9;overflow:auto;white-space:nowrap}
+nav button{border:0;background:none;padding:13px 16px;cursor:pointer;color:var(--navy);font-weight:700}
+nav button.active{color:#fff;background:var(--blue)}
+main{max-width:1250px;margin:22px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:20px;box-shadow:0 2px 8px #17365d12}
+h2{color:var(--navy);border-bottom:2px solid #dbe5f0;padding-bottom:8px;margin-top:0}
+h3{color:var(--blue);margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.field label{display:block;font-weight:700;font-size:13px;margin-bottom:5px}
+input,textarea,select{width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:6px;font:inherit;background:#fff}
+textarea{min-height:76px;resize:vertical}.full{grid-column:1/-1}
+table{width:100%;border-collapse:collapse;margin:10px 0 18px;font-size:13px}
+th,td{border:1px solid var(--border);padding:7px;vertical-align:top}th{background:#edf3f9;color:var(--navy)}
+td input,td textarea,td select{min-width:90px;padding:6px}
+.btn{border:0;border-radius:6px;padding:9px 13px;cursor:pointer;font-weight:700;margin:3px}
+.primary{background:var(--blue);color:#fff}.success{background:var(--green);color:#fff}.danger{background:var(--red);color:#fff}.muted{background:#e8edf3;color:#24364b}
+.toolbar{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.note{background:#fff8df;border-left:4px solid #d4a72c;padding:10px 12px;margin:10px 0}
+.score{font-size:18px;font-weight:700;color:var(--green)}
+.hidden{display:none}.section{display:none}.section.active{display:block}
+.signature{border:1px dashed #9aa9ba;padding:14px;background:#fafcfe}.doc-cell{min-width:190px;background:#fbfdff}.support-doc{font-size:12px!important;padding:4px!important}.doc-status{font-size:11px;color:#287d5a;margin-top:4px;line-height:1.25}
+@media(max-width:800px){.grid,.grid3{grid-template-columns:1fr}nav{top:88px}.card{padding:15px}table{display:block;overflow:auto}}
+@media print{header,nav,.toolbar,.no-print{display:none!important}body{background:#fff}.card{box-shadow:none;border:0;page-break-inside:avoid}main{max-width:none;margin:0}.section{display:block!important}}
+
+.cycle-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.cycle-btn{border:1px solid var(--border);background:#f4f7fb;color:var(--navy);border-radius:7px;padding:10px 16px;cursor:pointer;font-weight:700}
+.cycle-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+#fiveCycleTable tfoot th{background:#e8f1f8}
+
+#fiveSummary table{min-width:900px}
+#fiveSummary .total-row td,#fiveSummary .grand-row td{font-weight:700;background:#edf3f9}
+</style>
+</head>
+<body>
+<header>
+  <h1>Career Advancement Scheme (CAS)</h1>
+  <p>For the teachers of Vidyasagar University · Annual PBAS / API Assessment</p>
+</header>
+<nav id="tabs">
+  <button class="active" data-tab="general">Part A — General Information</button>
+  <button data-tab="teaching">Category I — Teaching</button>
+  <button data-tab="professional">Category II — Professional Development</button>
+  <button data-tab="research">Category III — Research</button>
+  <button data-tab="summary">Current Cycle Summary & Declaration</button>
+<button data-tab="fiveSummary">5-Cycle Summary</button>
+</nav>
+
+<main>
+<div class="card no-print" id="cloudPanel">
+  <h2>Online SAR Storage</h2>
+  <p class="note">This published version can store SAR records and supporting documents centrally using Supabase. Sign in to save/load your work from any device.</p>
+  <div class="grid3">
+    <div class="field"><label>Email</label><input id="cloudEmail" type="email" placeholder="your-email@example.com"></div>
+    <div class="field"><label>Password</label><input id="cloudPassword" type="password" placeholder="Password"></div>
+    <div class="field" style="display:flex;align-items:end;gap:6px;flex-wrap:wrap"><button class="btn primary" onclick="cloudSignIn()">Sign in</button><button class="btn muted" onclick="cloudSignUp()">Create account</button><button class="btn danger" onclick="cloudSignOut()">Sign out</button></div>
+  </div>
+  <div id="cloudStatus" class="doc-status" style="font-size:13px;margin-top:8px">Cloud storage is not configured yet.</div>
+  <div class="toolbar" style="margin-top:8px"><button class="btn success" onclick="saveToCloud()">Save current cycle to cloud</button><button class="btn primary" onclick="loadFromCloud()">Load current cycle from cloud</button><button class="btn muted" onclick="loadAllCloudCycles()">Load all 5 cycles</button></div>
+</div>
+<div class="toolbar no-print">
+  <button class="btn success" onclick="saveData()">Save local backup</button>
+  <button class="btn muted" onclick="loadData()">Load saved data</button>
+  <button class="btn danger" onclick="clearData()">Clear saved data</button>
+  <button class="btn primary" onclick="window.print()">Print / Save as PDF</button>
+</div>
+
+
+<div class="card no-print" id="cyclePanel">
+  <h2>Annual SAR Cycles — 5 Cycle Record</h2>
+  <p class="note">Each annual assessment cycle uses the same SAR fields. Select a cycle below; the data entered for each cycle is maintained separately.</p>
+  <div id="cycleButtons" class="cycle-buttons"></div>
+  <div class="grid3" style="margin-top:12px">
+    <div class="field"><label>Current Cycle</label><input id="cycleName" readonly></div>
+    <div class="field"><label>Academic Year / Assessment Period</label><input id="cyclePeriod" placeholder="e.g. July 2020 to June 2021"></div>
+    <div class="field"><label>Cycle Note</label><input id="cycleNote" placeholder="Optional note"></div>
+  </div>
+</div>
+<section id="general" class="section active">
+<div class="card">
+<h2>APPENDIX - II</h2>
+<div class="grid">
+<div class="field"><label>Session / Year</label><input id="session" value="July 2020 to June 2021"></div>
+<div class="field"><label>Submission instruction</label><input value="To be completed and submitted at the end of each academic year" readonly></div>
+</div>
+<p class="note">Based on GO : 1197(28)- Edn(U)/ 1U-41/ 11(Pt) dated 31.12.2012, Govt. of W.B.</p>
+</div>
+
+<div class="card">
+<h2>PART A: GENERAL INFORMATION</h2>
+<div class="grid">
+<div class="field"><label>1. Name (Block letters)</label><input value="PRASENJIT ACHARYA"></div>
+<div class="field"><label>2. Father’s /Mother’s name</label><input value="NIHAR ACHARYA"></div>
+<div class="field"><label>3. Department</label><input value="DEPARTMENT OF GEOGRAPHY"></div>
+<div class="field"><label>4. Current Designation & Grade Pay</label><input value="ASSISTANT PROFESSOR; GP - INR 6000/-"></div>
+<div class="field"><label>5. Date of last Promotion</label><input value="NA"></div>
+<div class="field full"><label>6. Address for correspondence (with pin code)</label><textarea>KD College Road, Midnapore - 721101</textarea></div>
+<div class="field full"><label>7. Permanent Address (with pin code) Telephone No.</label><textarea>Vill. Padumbasan (Ward No. 5), PO. Tamluk, Dist. Purba Medinipur – 721636, Ph. 9811512890</textarea></div>
+<div class="field full"><label>E-mail</label><input value="prasenjit.ac@mail.vidyasagar.ac.in"></div>
+</div>
+<h3>8. Whether acquired any degrees or fresh academic qualifications during the year</h3>
+<table id="qualTable"><thead><tr><th>Name of the Course/Summer School</th><th>Place</th><th>Duration</th><th>Sponsoring Agency</th><th>Action</th></tr></thead>
+<tbody><tr><td><input value="Faculty Induction Program"></td><td><input value="Delhi University"></td><td><input value="15th March – 14th April, 2021"></td><td><input value="HRD, GoI"></td><td><button class="btn danger" onclick="removeRow(this)">Remove</button></td></tr></tbody></table>
+<button class="btn primary" onclick="addQual()">+ Add qualification</button>
+<p>I declare that the particulars given above are correct to the best of my knowledge and belief.</p>
+<div class="signature"><b>Signature of the Candidate:</b> Prasenjit Acharya</div>
+</div>
+</section>
+
+<section id="teaching" class="section">
+<div class="card">
+<h2>PART B: Academic Performance Indicators (API)</h2>
+<p class="note">Please see ‘Guidelines for computing API score’ available in the VU website.</p>
+<h3>CATEGORY 1: TEACHING, LEARNING AND EVALUATION RELATED ACTIVITIES</h3><div class="note"><b>Supporting documents:</b> Upload evidence against each relevant teaching, examination, or innovative-teaching entry.</div>
+<h3>I. Direct Teaching — A. Lectures, seminars, tutorials, practical, contact hours undertaken taken as percentage of lectures allocated.</h3>
+<table id="teachingTable"><thead><tr><th>Sl.No.</th><th>Course/Paper</th><th>Level</th><th>Mode of Teaching #</th><th>Class allotted as per schedule</th><th>No. of Classes conducted</th><th>% of classes/Practical taken as per record</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addTeaching()">+ Add teaching row</button>
+<div class="grid3">
+<div class="field"><label>API — Classes taken</label><input id="apiClasses" type="number" value="70"></div>
+<div class="field"><label>Teaching load in excess of UGC norms / Special Lectures / Classes taken at study centre other than VU</label><input value="NIL"></div>
+<div class="field"><label>Maximum Score: Assistant professor / Associate / Professor</label><input value="70 / 60 / 60" readonly></div>
+</div>
+</div>
+
+<div class="card">
+<h3>B. Examination duties (question paper setting, Invigilation, evaluation of answer scripts) as per allotment</h3>
+<table id="examTable"><thead><tr><th>Sl. No.</th><th>Type of Examination duties</th><th>Duties Assigned</th><th>Extent to which carried out (%)</th><th>API Score</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addExam()">+ Add examination duty</button>
+<p><b>Maximum Score:</b> Assistant professor-20 Associate -20 Professor – 10</p>
+</div>
+
+<div class="card">
+<h3>C. Innovative Teaching - learning methodologies, updating of subject contents/courses, mentoring etc.</h3>
+<table id="innovTable"><thead><tr><th>Sl. No.</th><th>Short description</th><th>API Score</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addInnov()">+ Add activity</button>
+<p><b>Maximum Score:</b> Assistant professor-10 Associate -15 Professor – 20</p>
+</div>
+</section>
+
+<section id="professional" class="section">
+<div class="card">
+<h2>CATEGORY II: PROFESSIONAL DEVELOPMENT, CO-CURRICULAR AND EXTENSION ACTIVITIES</h2>
+<div class="note"><b>Supporting documents:</b> Upload certificates, participation records, appointment/committee orders, activity reports, training certificates, or other supporting material against the relevant Category II entry.</div>
+<table id="profTable"><thead><tr><th>Sl No.</th><th>Nature of Activity</th><th>Maximum API Score</th><th>Actual activity / hours / details</th><th>API Score</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addProf()">+ Add activity</button>
+<p class="score">Category II Total API Score: <span id="profTotal">45</span></p>
+</div>
+</section>
+
+<section id="research" class="section">
+<div class="card">
+<h2>CATEGORY–3: RESEARCH, PUBLICATIONS AND ACADEMIC CONTRIBUTION</h2><div class="note"><b>Supporting documents:</b> Upload publications, certificates, project documents, award letters, presentation certificates, research-guidance evidence, or other supporting material against the relevant entry.</div>
+<h3>A) Published papers in journals</h3>
+<table id="papersTable"><thead><tr><th>Sl.</th><th>Title of the paper</th><th>Journal with Vol., Page No., date/year of publication</th><th>ISSN No.</th><th>Peer reviewed / Indexed / Impact factor</th><th>No. of co-authors</th><th>First / corresponding author</th><th>API Score of paper</th><th>API Score Obtained</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addPaper()">+ Add paper</button>
+</div>
+
+<div class="card">
+<h3>B (i) Articles/ Chapters published in Books</h3>
+<div class="field"><label>Entries</label><textarea>NA</textarea></div>
+<h3>B (ii) Books published as single author or as editor</h3>
+<table id="booksTable"><thead><tr><th>Sl.</th><th>Title of the book</th><th>Publisher & ISSN / ISBN No. with page No, date/year</th><th>National / International / State level</th><th>Peer reviewed</th><th>No. of co-authors</th><th>Main author</th><th>API Score</th><th>API Score obtained</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addBook()">+ Add book</button>
+
+<h3>C) I) Research Projects and Consultancies</h3>
+<table id="projectsTable"><thead><tr><th>Sl.</th><th>Title</th><th>Agency</th><th>Period</th><th>Grant/Amount mobilized (Rs. lakh)</th><th>PI / Co-PI</th><th>API score</th><th>API score obtained</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addProject()">+ Add project</button>
+
+<h3>C) II) Projects Outcome / Outputs</h3>
+<table id="outputsTable"><thead><tr><th>Sl.</th><th>Title</th><th>Patent / Technology transfer / Product / Process / Major Policy document...</th><th>Level</th><th>Period</th><th>API Score</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addOutput()">+ Add output</button>
+
+<h3>D) Research Guidance</h3>
+<table id="guidanceTable"><thead><tr><th>Level of guidance</th><th>Number enrolled</th><th>Thesis Submitted *</th><th>Degree Awarded *</th><th>API score</th><th>API score obtained</th><th>Supporting Document</th></tr></thead><tbody>
+<tr><td><input value="M.Phil."></td><td><input value="2"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td><td class="doc-cell"><input type="file" class="support-doc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png" onchange="cloudHandleDocument(this)"><div class="doc-status"></div></td></tr>
+<tr><td><input value="Ph.D."></td><td><input value="3"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td><td class="doc-cell"><input type="file" class="support-doc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png" onchange="cloudHandleDocument(this)"><div class="doc-status"></div></td></tr>
+</tbody></table>
+<p>*Please mention year of submission or award</p>
+</div>
+
+<div class="card">
+<h3>E. Fellowships, Awards and Invited lectures Delivered in Conferences/Seminars</h3>
+<h4>(E) I. Fellowships / Awards</h4>
+<table id="awardsTable"><thead><tr><th>Sl. No.</th><th>Title of the Award</th><th>Award Name with date/year</th><th>Organized by</th><th>International/National/State/University level</th><th>API score</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addAward()">+ Add award</button>
+
+<h4>(E) II. Invited lectures / Papers presented in Conferences, Seminars, Workshops, and Symposia</h4>
+<table id="lecturesTable"><thead><tr><th>Sl.</th><th>Title of Lecture / Presented Paper</th><th>Title of Conference/Seminar with date/year</th><th>Organized by</th><th>International/National/State/University level</th><th>API score</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addLecture()">+ Add lecture</button>
+
+<h4>(F) Development of e-learning delivery process/material</h4>
+<table id="elearnTable"><thead><tr><th>Sl.</th><th>Title</th><th>Module with date/year</th><th>Organized by</th><th>API score</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addElearn()">+ Add e-learning item</button>
+</div>
+</section>
+
+
+<section id="fiveSummary" class="section">
+<div class="card">
+<h2>SUMMARY</h2><p class="note"><b>Cycle mapping:</b> Cycle 1 = July Y1–June Y2; Cycle 2 = July Y2–June Y3; Cycle 3 = July Y3–June Y4; Cycle 4 = July Y4–June Y5; Cycle 5 = July Y5–June Y6.</p>
+<h3>CATEGORY – I</h3>
+<h3>TEACHING, LEARNING AND EVALUATION RELATED ACTIVITIES</h3>
+<table id="summaryCat1">
+<thead><tr><th>Sl</th><th>Sub-category</th>
+<th>Cycle 1</th><th>Cycle 2</th><th>Cycle 3</th>
+<th>Cycle 4</th><th>Cycle 5</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>A. Lectures, seminars, tutorials, practical, contact hours undertaken taken as percentage of lectures allocated, Reading/Instructional material consulted and additional knowledge resources provided to students</td><td><input value="74.6"></td><td><input value="62.4"></td><td><input value="62.72"></td><td><input value="60.56"></td><td><input value="53.96"></td></tr>
+<tr><td>2</td><td>B. Examination duties (question paper setting, Invigilation, evaluation of answer scripts) as per allotment</td><td><input value="29.4"></td><td><input value="22.9"></td><td><input value="33.7"></td><td><input value="32"></td><td><input value="29.4"></td></tr>
+<tr><td>3</td><td>C. Innovative Teaching - learning methodologies, updating of subject contents/courses, mentoring etc. updating of subject content, course improvement etc</td><td><input value="2.4"></td><td><input value="2.4"></td><td><input value="3.0"></td><td><input value="2.5"></td><td><input value="2.0"></td></tr>
+<tr class="total-row"><td colspan="2"><b>Total</b></td><td><input value="106.4"></td><td><input value="87.7"></td><td><input value="99.42"></td><td><input value="95.06"></td><td><input value="85.36"></td></tr>
+<tr class="grand-row"><td colspan="2"><b>Grand Total</b></td><td colspan="5"><input value="(106.4+87.7+99.42+95.06+85.36) = 473.94"></td></tr>
+</tbody></table>
+</div>
+
+<div class="card">
+<h3>CATEGORY – II</h3>
+<h3>CO-CURRICULAR, EXTENSION AND PROFESSIONAL DEVELOPMENT RELATED ACTIVITIES</h3>
+<table id="summaryCat2">
+<thead><tr><th>Sl</th><th>Sub-category</th>
+<th>Cycle 1</th><th>Cycle 2</th><th>Cycle 3</th>
+<th>Cycle 4</th><th>Cycle 5</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>A. Student related co-curricular, extension and field-based activities.</td><td><input value="9.4"></td><td><input value="13"></td><td><input value="13"></td><td><input value="14.6"></td><td><input value="14.4"></td></tr>
+<tr><td></td><td>B. Contribution to corporate life and management of the department and institution through participation in academic and administrative committees and responsibilities.</td><td><input value="20"></td><td><input value="18.8"></td><td><input value="24.6"></td><td><input value="21.6"></td><td><input value="15"></td></tr>
+<tr><td></td><td>C. Professional Development activities (such as participation in seminars, conferences, short term training courses, industrial experience, talks, lectures in refresher / faculty development courses, dissemination and general articles and any other contribution)</td><td><input value="0.4"></td><td><input value="1.6"></td><td><input value="1.6"></td><td><input value="1.6"></td><td><input value="22.2"></td></tr>
+<tr class="total-row"><td colspan="2"><b>Total</b></td><td><input value="29.8"></td><td><input value="33.4"></td><td><input value="48.2"></td><td><input value="37.8"></td><td><input value="51.6"></td></tr>
+<tr class="grand-row"><td colspan="2"><b>Grand Total</b></td><td colspan="5"><input value="(29.8+33.4+48.2+37.8+51.6) = 200.8"></td></tr>
+</tbody></table>
+</div>
+
+<div class="card">
+<h3>CATEGORY – III</h3>
+<h3>RESEARCH, PUBLICATIONS AND ACADEMIC CONTRIBUTION</h3>
+<table id="summaryCat3">
+<thead><tr><th>Sub-category</th>
+<th>Cycle 1</th><th>Cycle 2</th><th>Cycle 3</th>
+<th>Cycle 4</th><th>Cycle 5</th></tr></thead>
+<tbody>
+<tr><td>A. Published papers in journals</td><td><input value="11"></td><td><input value="6"></td><td><input value="24"></td><td><input value="11"></td><td><input value="32"></td></tr>
+<tr><td>B. Articles/ Chapters published in Books</td><td><input value="52"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td></tr>
+<tr><td>C. Research Projects and Consultancies</td><td><input value="NA"></td><td><input value="10"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td></tr>
+<tr><td>D. Research Guidance</td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td></tr>
+<tr><td>E. Fellowships, Awards and Invited lectures Delivered in Conferences/Seminars:</td><td><input value="NA"></td><td><input value="37.5"></td><td><input value="17.5"></td><td><input value="20"></td><td><input value="5"></td></tr>
+<tr><td>F. Development of e-learning delivery process/material</td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td></tr>
+<tr class="total-row"><td><b>Total</b></td><td><input value="63"></td><td><input value="53.5"></td><td><input value="41.5"></td><td><input value="31"></td><td><input value="37"></td></tr>
+<tr class="grand-row"><td><b>Grand Total</b></td><td colspan="5"><input value="(63+53.5+41.5+31+37) = 226"></td></tr>
+</tbody></table>
+</div>
+
+<div class="card">
+<h3>5-CYCLE CATEGORY TOTALS</h3>
+<table id="fiveCycleTotals">
+<thead><tr><th>Category</th><th>Cycle 1</th><th>Cycle 2</th><th>Cycle 3</th><th>Cycle 4</th><th>Cycle 5</th><th>5-Cycle Total</th></tr></thead>
+<tbody>
+<tr><td>Category I</td><td class="i1">106.4</td><td class="i2">87.7</td><td class="i3">99.42</td><td class="i4">95.06</td><td class="i5">85.36</td><td id="g1">473.94</td></tr>
+<tr><td>Category II</td><td class="j1">29.8</td><td class="j2">33.4</td><td class="j3">48.2</td><td class="j4">37.8</td><td class="j5">51.6</td><td id="g2">200.8</td></tr>
+<tr><td>Category III</td><td class="k1">63</td><td class="k2">53.5</td><td class="k3">41.5</td><td class="k4">31</td><td class="k5">37</td><td id="g3">226</td></tr>
+<tr class="total-row"><td><b>Categories I + II + III</b></td><td id="t1">199.2</td><td id="t2">174.6</td><td id="t3">189.12</td><td id="t4">163.86</td><td id="t5">173.96</td><td id="gt">900.74</td></tr>
+</tbody></table>
+</div>
+</section>
+
+<section id="summary" class="section">
+<div class="card">
+
+<h2>SUMMARY OF API SCORES — CURRENT CYCLE</h2>
+
+<table><thead><tr><th>Category</th><th>Last Academic Year</th><th>Total API Score for the Entire Assessment period</th><th>Annual Average API Score for the Assessment period</th></tr></thead>
+<tbody>
+<tr><td>I — Teaching, learning and evaluation related activities</td><td><input value="100"></td><td><input value="100"></td><td><input value="100"></td></tr>
+<tr><td>II — Professional development, co-curricular and extension activities</td><td><input value="45"></td><td><input value="45"></td><td><input value="45"></td></tr>
+<tr><td>III — Research and Academic Contribution</td><td><input value="37"></td><td><input value="37"></td><td><input value="37"></td></tr>
+<tr><td>II+III — Minimum total API Score under Category II and Category III</td><td><input value="82"></td><td><input value="82"></td><td><input value="82"></td></tr>
+</tbody></table>
+<div class="note">Supporting documents to be enclosed for the API score claimed for each of the cases, as mentioned in guidelines for API Score.</div>
+<div class="signature">
+<p><b>Signature of the teacher with date</b></p>
+<input value="Prasenjit Acharya | 01.12.2021">
+<p><b>Forwarded by the Head of the Department</b></p>
+<input placeholder="Name / signature / date">
+</div>
+</div>
+</section>
+</main>
+
+<script>
+// Supabase browser configuration. Replace the placeholders with your project URL and publishable/anon key.
+// Never put a Supabase service_role key in this file.
+const SUPABASE_URL = window.VU_SUPABASE_URL || "https://wkpaxnbbyfyrnaqnjfle.supabase.co";
+const SUPABASE_ANON_KEY = window.VU_SUPABASE_ANON_KEY || "sb_publishable_81YuGz03ZgqvlhdYVFYYdg_HEjPubSP";
+const STORAGE_BUCKET = "sar-documents";
+const supabaseConfigured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("YOUR_") && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes("YOUR_");
+const sb = supabaseConfigured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {auth:{persistSession:true,autoRefreshToken:true}}) : null;
+
+const data = {
+teaching:[
+["1st Semester","GEO 101, U 1","PG","L","4@week; 16 pm","16 pm","100"],
+["1st Semester","GEO 102, U 2","PG","L","","",""],
+["1st Semester","GEO 103, U - 1","PG","L","","",""],
+["1st Semester","GEO 103, U - 2","PG","L","","",""],
+["1st Semester","GEO 195 (P), U - 1","PG","L+P","","",""],
+["2nd Semester","GEO 201, U - 2","PG","L","5@week; 20 pm","20 pm","100"],
+["2nd Semester","GEO 202, U – 1, 2","PG","L","","",""],
+["2nd Semester","GEO 203, U - 18","PG","L","","",""],
+["2nd Semester","GEO 204 (CBCS), U – 1,2","PG","L","","",""],
+["2nd Semester","GEO 295 (P), U – 1,2","PG","L+P","","",""],
+["2nd Semester","GEO 296 (P), U – 1,2","PG","L+P","","",""],
+["3rd Semester","GEO 301, U – 1,2","PG","L","7@week; 28 pm","28 pm","100"],
+["3rd Semester","GEO 303D, U - 1","PG","L","","",""],
+["3rd Semester","GEO 304(CBCS), U – 1, 2","PG","L","","",""],
+["3rd Semester","GEO 395 (P), U – 1,2","PG","L+P","","",""],
+["3rd Semester","GEO 396D (P), U – 1, 2","PG","L+P","","",""],
+["4th Semester","GEO 401, U - 1","PG","L","7@week; 28 pm","28 pm","100"],
+["4th Semester","GEO 402, U - 1","PG","L","","",""],
+["4th Semester","GEO 403, U - 2","PG","L","","",""],
+["4th Semester","GEO 404D, U - 2","PG","L","","",""],
+["4th Semester","GEO 495 (P), U – 1,2","PG","L+P","","",""],
+["4th Semester","GEO 496 (P), U – 1,2","PG","L+P","","",""],
+["MPhil/PhD","Paper 112","Research","L","2 pm","2 pm","100"],
+["MPhil/PhD","Paper 123D","Research","L+P","","",""],
+["MPhil/PhD","Paper 108","Research","L+P","","",""]
+],
+exams:[
+["","Semester Examination (PG)","Question setting + Moderation + Examination","100%","20"],
+["","Semester Examination (UG)","Question setting + Moderation","100%",""]
+],
+innov:[["","Introduction of cloud computing facility for big data analysis using Google Earth Engine in special paper course (Remote Sensing and GIS).","10"]],
+prof:[
+["A","(i) Discipline related co-curricular activities (e.g. remedial classes, career counselling, study visit, student seminar and other events.)","15","Remedial class, organizing career counselling, Organizing online lectures, student seminar",""],
+["A","(ii) Other co-curricular activities (Cultural, Sports, NSS, NCC etc.)","","Organizing talks on behalf of NSS on various academic, gender sensitisation and environmental issues, Gardening and waste management practice; Participation in VUTA cultural program.",""],
+["A","(iii) Extension and dissemination activities (public /popular lectures/talks/seminars etc.)","","Participation in lectures series organized by breakthrough science society",""],
+["B","i). Administrative responsibility (including as Dean / Principal / Chairperson / Convener / Teacher-in-charge/similar other duties that require regular office hrs for its discharge)","15","Associate Editor, Indian Journal of Geography and Environment; Annual Report committee member",""],
+["B","(ii). Participation in Board of Studies, Academic and Administrative committees","","Member of PG BOS Geography, Member of UG BOS Geography, Member of UG BOS Geology, Member of moderation board DDE, UG and PG, External Examiner, Paper setter and moderator for PG course in colleges",""],
+["C","Professional Development activities (such as participation in seminars, conferences, short term training courses, industrial experience, talks, lectures in refresher / faculty development courses, dissemination and general articles and any other contribution)","15","Attended Faculty Induction Program organized by Ramanujan College, Delhi University under UGC HRDC program. Duration - 15th March – 14th April, 2021; Participated in short term course on ‘micro pulse lidar for atmospheric remote sensing of aerosols’ organized by Tesscorn Systems India Pvt Ltd, Bangalore, India; Participated in hands on session for Regional Climate Modelling; organized by Department of Physics, Dibrugarh University (22-28 Feb, 2021); Participated in Sustainability seminar series organised by IIT Gandhinagar","51.6"]
+],
+papers:[
+["1","A synergy of linear model and wavelet analysis towards space-time characterization of aerosol optical depth (AOD) during pre-monsoon season (2007–2016) over Indian sub-continent”","Journal of Atmospheric and Solar-Terrestrial Physics 211, https://doi.org/10.1016/j.jastp.2020.105478","1364-6826","1.735","5","Corresponding Author","10","10×0.7=7"],
+["2","Revisiting the levels of Aerosol Optical Depth in south-southeast Asia, Europe and USA amid the COVID-19 pandemic using satellite observations","Journal of Environmental Research 193, 110514. https://doi.org/10.1016/j.envres.2020.110514","0013-9351","6.498","8","First and Corresponding Author","20","20×0.7=14"],
+["3","Assessing the Spatial Distribution of Aerosols and Air Quality over the Ganga River Basin during COVID-19 Lockdown Phase-1","Remote Sensing Applications: Society and Environment, 100546, https://doi.org/10.1016/j.rsase.2021.100546","2352-9385","Cite Score - 4","4","3rd Author","5","5×0.3=2"],
+["4","Morphometric analysis to characterize the soil erosion susceptibility in the western part of lower Gangetic River basin, India","Arab J Geosci 14, 501 (2021). https://doi.org/10.1007/s12517-021-06819-8","1866-7538","1.827","4","3rd Author","10","10×0.3=3"],
+["5","Spatio-temporal characterization of landscape fire in relation to anthropogenic activity and climatic variability over the Western Himalaya","GIScience & Remote Sensing, 58:2, 281-299, DOI: 10.1080/15481603.2021.1879495","1548-1603","6.238","6","5th Author","20","20×0.3=6"]
+],
+guidance:[],
+awards:[], lectures:[
+["1","Invited lecture on: Status of global air pollution amid COVID-19 pandemic","UGC-STRIDE Online Lecture Series Programme","Department of Geography, Shivaji University, Kolhapur, Maharashtra","National","5"]
+], elearn:[]
+};
+
+function inp(v="", type="text"){return `<input type="${type}" value="${String(v??"").replace(/"/g,'&quot;')}">`}
+function docCell(){return `<td class="doc-cell"><input type="file" class="support-doc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png" onchange="cloudHandleDocument(this)"><div class="doc-status"></div></td>`}
+function row(cells, action=true, upload=false){return `<tr>${cells.map(x=>`<td>${inp(x)}</td>`).join("")}${upload?docCell():""}${action?'<td><button class="btn danger" onclick="removeRow(this)">Remove</button></td>':''}</tr>`}
+function render(tableId, rows, upload=false){document.querySelector(`#${tableId} tbody`).innerHTML=rows.map(r=>row(r,true,upload)).join("")}
+render("teachingTable",data.teaching,true); render("examTable",data.exams,true); render("innovTable",data.innov,true); render("profTable",data.prof,true); render("papersTable",data.papers,true); render("lecturesTable",data.lectures,true);
+function addQual(){document.querySelector("#qualTable tbody").insertAdjacentHTML("beforeend",row(["","","",""]));}
+function addTeaching(){document.querySelector("#teachingTable tbody").insertAdjacentHTML("beforeend",row(["","","","","","",""],true,true));}
+function addExam(){document.querySelector("#examTable tbody").insertAdjacentHTML("beforeend",row(["","","","",""],true,true));}
+function addInnov(){document.querySelector("#innovTable tbody").insertAdjacentHTML("beforeend",row(["","",""],true,true));}
+function addProf(){document.querySelector("#profTable tbody").insertAdjacentHTML("beforeend",row(["","","","",""] ,true,true));}
+function addPaper(){document.querySelector("#papersTable tbody").insertAdjacentHTML("beforeend",row(["","","","","","","","",""],true,true));}
+function addBook(){document.querySelector("#booksTable tbody").insertAdjacentHTML("beforeend",row(["","","","","","","","",""],true,true));}
+function addProject(){document.querySelector("#projectsTable tbody").insertAdjacentHTML("beforeend",row(["","","","","","","",""],true,true));}
+function addOutput(){document.querySelector("#outputsTable tbody").insertAdjacentHTML("beforeend",row(["","","","","",""],true,true));}
+function addAward(){document.querySelector("#awardsTable tbody").insertAdjacentHTML("beforeend",row(["","","","","",""],true,true));}
+function addLecture(){document.querySelector("#lecturesTable tbody").insertAdjacentHTML("beforeend",row(["","","","","",""],true,true));}
+function addElearn(){document.querySelector("#elearnTable tbody").insertAdjacentHTML("beforeend",row(["","","","",""],true,true));}
+function removeRow(btn){btn.closest("tr").remove()}
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{if(b.dataset.tab==="summary"){saveCurrentApi();saveCurrentCycle();updateFiveCycleSummary();}document.querySelectorAll("#tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.getElementById(b.dataset.tab).classList.add("active");window.scrollTo({top:0,behavior:"smooth"})});
+
+const DB_NAME="VU_SAR_DOCUMENTS", DB_VERSION=1, STORE="documents";
+function openDocumentDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,DB_VERSION);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE);};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+async function handleDocument(input){const file=input.files&&input.files[0];if(!file)return;const status=input.parentElement.querySelector(".doc-status");try{const db=await openDocumentDB();const key=(crypto.randomUUID?crypto.randomUUID():"doc-"+Date.now()+"-"+Math.random());await new Promise((resolve,reject)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).put({name:file.name,type:file.type,size:file.size,file:file},key);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});input.dataset.docKey=key;status.textContent="Uploaded: "+file.name+" ("+Math.ceil(file.size/1024)+" KB)";}catch(e){status.textContent="Selected: "+file.name;}}
+async function downloadDocument(input){const key=input.dataset.docKey;if(!key){alert("Please select a document first.");return;}try{const db=await openDocumentDB();const rec=await new Promise((resolve,reject)=>{const tx=db.transaction(STORE,"readonly");const r=tx.objectStore(STORE).get(key);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});if(!rec)return;const url=URL.createObjectURL(rec.file),a=document.createElement("a");a.href=url;a.download=rec.name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){alert("The stored document could not be opened.");}}
+function addDocumentActions(){document.querySelectorAll(".doc-cell").forEach(cell=>{if(cell.querySelector(".doc-open"))return;const input=cell.querySelector(".support-doc");if(!input)return;const b=document.createElement("button");b.type="button";b.className="btn muted doc-open";b.textContent="Open saved file";b.onclick=()=>downloadDocument(input);cell.appendChild(b);});}
+setInterval(addDocumentActions,1000);
+
+
+function updateFiveSummaryTable(){
+  const ids=["summaryCat1","summaryCat2","summaryCat3"];
+  const totals=[];
+  ids.forEach(id=>{
+    const table=document.getElementById(id); if(!table)return;
+    const rows=table.querySelectorAll("tbody tr:not(.total-row):not(.grand-row)");
+    const vals=[1,2,3,4,5].map(col=>{
+      let sum=0;
+      rows.forEach(r=>{const v=parseFloat(r.querySelectorAll("input")[col-1]?.value);if(Number.isFinite(v))sum+=v;});
+      return Math.round(sum*100)/100;
+    });
+    totals.push(vals);
+    const totalRow=table.querySelector("tr.total-row");
+    if(totalRow)totalRow.querySelectorAll("input").forEach((x,i)=>x.value=vals[i]);
+  });
+  if(totals.length<3)return;
+  const all=[];
+  for(let i=0;i<5;i++){
+    all[i]=totals[0][i]+totals[1][i]+totals[2][i];
+    document.getElementById("t"+(i+1)).textContent=all[i].toFixed(2).replace(/\.00$/,"");
+  }
+  totals.forEach((v,i)=>{
+    const total=v.reduce((a,b)=>a+b,0);
+    document.getElementById("g"+(i+1)).textContent=total.toFixed(2).replace(/\.00$/,"");
+  });
+  document.getElementById("gt").textContent=all.reduce((a,b)=>a+b,0).toFixed(2).replace(/\.00$/,"");
+}
+function saveFiveSummary(){
+  const x={};
+  document.querySelectorAll("#fiveSummary input").forEach((e,i)=>x[i]=e.value);
+  localStorage.setItem("VU_SAR_FIVE_SUMMARY",JSON.stringify(x));
+}
+function loadFiveSummary(){
+  try{
+    const x=JSON.parse(localStorage.getItem("VU_SAR_FIVE_SUMMARY")||"null");
+    if(x)document.querySelectorAll("#fiveSummary input").forEach((e,i)=>{if(x[i]!==undefined)e.value=x[i]});
+  }catch(e){}
+  updateFiveSummaryTable();
+}
+setTimeout(()=>{
+  document.querySelectorAll("#fiveSummary input").forEach(e=>e.addEventListener("input",updateFiveSummaryTable));
+  loadFiveSummary();
+},150);
+
+const CYCLE_COUNT=5;
+const CYCLE_KEY="VU_SAR_FIVE_CYCLES";
+let currentCycle=0;
+let cycles=Array.from({length:CYCLE_COUNT},(_,i)=>({
+  name:"Cycle "+(i+1),
+  period:i===0?"July 2020 to June 2021":"",
+  note:"",
+  fields:{},
+  api:{c1:i===0?100:0,c2:i===0?45:0,c3:i===0?37:0,c23:i===0?82:0}
+}));
+
+function controls(){
+  return Array.from(document.querySelectorAll("input,textarea,select"))
+    .filter(e=>!["cycleName","cyclePeriod","cycleNote"].includes(e.id));
+}
+function saveCurrentCycle(){
+  const f={};
+  controls().forEach((e,i)=>{
+    const k=e.id||("f"+i);
+    if(e.type==="file"){
+      f[k]={file:e.dataset.docKey||"",name:e.files&&e.files[0]?e.files[0].name:""};
+    }else f[k]=e.value;
+  });
+  cycles[currentCycle].fields=f;
+  cycles[currentCycle].name=document.getElementById("cycleName").value||("Cycle "+(currentCycle+1));
+  cycles[currentCycle].period=document.getElementById("cyclePeriod").value;
+  cycles[currentCycle].note=document.getElementById("cycleNote").value;
+  localStorage.setItem(CYCLE_KEY,JSON.stringify(cycles));
+}
+function loadCycle(n){
+  currentCycle=n;
+  const c=cycles[n];
+  document.getElementById("cycleName").value=c.name||("Cycle "+(n+1));
+  document.getElementById("cyclePeriod").value=c.period||"";
+  document.getElementById("cycleNote").value=c.note||"";
+  const f=c.fields||{};
+  controls().forEach((e,i)=>{
+    const v=f[e.id||("f"+i)];
+    if(v===undefined)return;
+    if(e.type==="file"){
+      e.dataset.docKey=v.file||"";
+      const s=e.parentElement.querySelector(".doc-status");
+      if(s&&v.name)s.textContent="Saved document: "+v.name;
+    }else e.value=v;
+  });
+  renderCycleButtons();
+}
+function renderCycleButtons(){
+  const box=document.getElementById("cycleButtons");
+  box.innerHTML="";
+  cycles.forEach((c,i)=>{
+    const b=document.createElement("button");
+    b.type="button"; b.className="cycle-btn"+(i===currentCycle?" active":"");
+    b.textContent=c.name||("Cycle "+(i+1));
+    b.onclick=()=>{if(i!==currentCycle)saveCurrentCycle();loadCycle(i);};
+    box.appendChild(b);
+  });
+}
+function loadFiveCycles(){
+  try{
+    const s=JSON.parse(localStorage.getItem(CYCLE_KEY)||"null");
+    if(Array.isArray(s)&&s.length===CYCLE_COUNT)cycles=s;
+  }catch(e){}
+  renderCycleButtons();
+  loadCycle(0);
+}
+function readCurrentApi(){
+  const table=document.querySelector("#summary table:last-of-type");
+  if(!table)return [0,0,0,0];
+  const rows=table.querySelectorAll("tbody tr");
+  const n=[];
+  rows.forEach(r=>{
+    const x=r.querySelector("input");
+    n.push(x?parseFloat(x.value)||0:0);
+  });
+  return [n[0]||0,n[1]||0,n[2]||0,n[3]||0];
+}
+function saveCurrentApi(){
+  cycles[currentCycle].api={c1:readCurrentApi()[0],c2:readCurrentApi()[1],c3:readCurrentApi()[2],c23:readCurrentApi()[3]};
+  localStorage.setItem(CYCLE_KEY,JSON.stringify(cycles));
+}
+function updateFiveCycleSummary(){
+  const body=document.querySelector("#fiveCycleTable tbody");
+  if(!body)return;
+  body.innerHTML="";
+  let a=0,b=0,c=0,d=0,done=0;
+  cycles.forEach((x,i)=>{
+    const v=x.api||{c1:0,c2:0,c3:0,c23:0};
+    a+=+v.c1||0;b+=+v.c2||0;c+=+v.c3||0;d+=+v.c23||0;
+    if((+v.c1||0)||(+v.c2||0)||(+v.c3||0)||(+v.c23||0))done++;
+    body.insertAdjacentHTML("beforeend",`<tr><td>${x.name||"Cycle "+(i+1)}</td><td>${x.period||"Not specified"}</td><td>${v.c1||0}</td><td>${v.c2||0}</td><td>${v.c3||0}</td><td>${v.c23||0}</td></tr>`);
+  });
+  document.getElementById("sumC1").textContent=a;
+  document.getElementById("sumC2").textContent=b;
+  document.getElementById("sumC3").textContent=c;
+  document.getElementById("sumC23").textContent=d;
+  document.getElementById("avgC1").textContent=(a/5).toFixed(2);
+  document.getElementById("avgC2").textContent=(b/5).toFixed(2);
+  document.getElementById("avgC3").textContent=(c/5).toFixed(2);
+  document.getElementById("avgC23").textContent=(d/5).toFixed(2);
+  document.getElementById("combined5").value=(a+b+c).toFixed(2);
+  document.getElementById("average5").value=((a+b+c)/5).toFixed(2);
+  document.getElementById("completedCycles").value=done+" / 5";
+}
+setTimeout(loadFiveCycles,0);
+
+function collect(){
+ const obj={};
+ document.querySelectorAll("input,textarea,select").forEach((el,i)=>obj["f"+i]=el.value);
+ return obj;
+}
+function saveData(){saveFiveSummary();saveCurrentApi();saveCurrentCycle();updateFiveSummaryTable();updateFiveCycleSummary();alert("All five annual SAR cycles saved in this browser.")}
+function loadData(){try{const s=JSON.parse(localStorage.getItem(CYCLE_KEY)||"null");if(Array.isArray(s)&&s.length===5)cycles=s;loadCycle(currentCycle);updateFiveCycleSummary();alert("Five-cycle SAR data loaded.");}catch(e){alert("No saved five-cycle SAR data found.");}}
+function clearData(){if(confirm("Clear all five-cycle SAR data saved in this browser?")){localStorage.removeItem(CYCLE_KEY);localStorage.removeItem("VU_SAR_2020_21");localStorage.removeItem("VU_SAR_FIVE_SUMMARY");location.reload();}}
+
+// ---------------- CLOUD STORAGE (SUPABASE) ----------------
+function setCloudStatus(msg, ok=false){const el=document.getElementById("cloudStatus");if(el){el.textContent=msg;el.style.color=ok?"#287d5a":"#b23b3b";}}
+async function requireUser(){if(!sb){setCloudStatus("Supabase is not configured. Add SUPABASE_URL and SUPABASE_ANON_KEY in the deployment configuration.");return null;}const {data,error}=await sb.auth.getUser();if(error||!data.user){setCloudStatus("Please sign in before using cloud storage.");return null;}return data.user;}
+async function cloudSignUp(){if(!sb){setCloudStatus("Supabase is not configured yet.");return;}const email=document.getElementById("cloudEmail").value.trim(),password=document.getElementById("cloudPassword").value;if(!email||!password){setCloudStatus("Enter an email and password.");return;}const {error}=await sb.auth.signUp({email,password});if(error)setCloudStatus(error.message);else setCloudStatus("Account created. Check your email if email confirmation is enabled.",true);}
+async function cloudSignIn(){if(!sb){setCloudStatus("Supabase is not configured yet.");return;}const email=document.getElementById("cloudEmail").value.trim(),password=document.getElementById("cloudPassword").value;const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)setCloudStatus(error.message);else setCloudStatus("Signed in as "+data.user.email,true);}
+async function cloudSignOut(){if(sb)await sb.auth.signOut();setCloudStatus("Signed out.");}
+
+async function cloudHandleDocument(input){
+  const file=input.files&&input.files[0]; if(!file)return;
+  const user=await requireUser(); if(!user){input.value="";return;}
+  const status=input.parentElement.querySelector(".doc-status");
+  try{
+    const row=input.closest("tr");
+    const table=input.closest("table");
+    const category=table?table.id:"unknown";
+    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+    const path=`${user.id}/${currentCycle+1}/${category}/${crypto.randomUUID()}_${safeName}`;
+    const {error:upErr}=await sb.storage.from(STORAGE_BUCKET).upload(path,file,{contentType:file.type||"application/octet-stream",upsert:false});
+    if(upErr)throw upErr;
+    const {data:doc,error:dbErr}=await sb.from("sar_documents").insert({user_id:user.id,cycle_index:currentCycle+1,category,field_key:"row-"+(row?Array.from(row.parentElement.children).indexOf(row):0),file_name:file.name,storage_path:path,mime_type:file.type||"application/octet-stream",size_bytes:file.size}).select().single();
+    if(dbErr)throw dbErr;
+    input.dataset.docId=doc.id; input.dataset.docPath=path; input.dataset.docName=file.name;
+    if(status)status.textContent="Cloud: "+file.name+" ("+Math.ceil(file.size/1024)+" KB)";
+    addDocumentActions();
+  }catch(e){console.error(e);if(status)status.textContent="Upload failed: "+(e.message||e);input.value="";}
+}
+
+async function openCloudDocument(input){
+  const id=input.dataset.docId; if(!id){alert("No cloud document is linked to this entry.");return;}
+  const user=await requireUser();if(!user)return;
+  try{
+    const {data:doc,error}=await sb.from("sar_documents").select("storage_path,file_name").eq("id",id).single();
+    if(error)throw error;
+    const {data:blob,error:dlErr}=await sb.storage.from(STORAGE_BUCKET).download(doc.storage_path);
+    if(dlErr)throw dlErr;
+    const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=doc.file_name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
+  }catch(e){alert("The cloud document could not be opened: "+(e.message||e));}
+}
+function addDocumentActions(){document.querySelectorAll(".doc-cell").forEach(cell=>{if(cell.querySelector(".doc-open"))return;const input=cell.querySelector(".support-doc");if(!input)return;const b=document.createElement("button");b.type="button";b.className="btn muted doc-open";b.textContent="Open saved file";b.onclick=()=>openCloudDocument(input);cell.appendChild(b);});}
+
+function cloudSnapshotFields(){
+  const f={};
+  controls().forEach((e,i)=>{
+    const k=e.id||("f"+i);
+    if(e.type==="file") f[k]={docId:e.dataset.docId||"",docPath:e.dataset.docPath||"",name:e.dataset.docName||(e.files&&e.files[0]?e.files[0].name:"")};
+    else f[k]=e.value;
+  });
+  return f;
+}
+function applyCloudFields(f){
+  controls().forEach((e,i)=>{
+    const v=f[e.id||("f"+i)]; if(v===undefined)return;
+    if(e.type==="file"){e.dataset.docId=v.docId||"";e.dataset.docPath=v.docPath||"";e.dataset.docName=v.name||"";const st=e.parentElement.querySelector(".doc-status");if(st&&v.name)st.textContent="Saved document: "+v.name;}
+    else e.value=v;
+  });
+  addDocumentActions();
+}
+async function saveToCloud(){
+  const user=await requireUser();if(!user)return;
+  try{
+    const record={user_id:user.id,cycle_index:currentCycle+1,cycle_name:document.getElementById("cycleName").value||("Cycle "+(currentCycle+1)),period:document.getElementById("cyclePeriod").value,note:document.getElementById("cycleNote").value,fields:cloudSnapshotFields(),api:cycles[currentCycle].api||{},updated_at:new Date().toISOString()};
+    const {error}=await sb.from("sar_cycles").upsert(record,{onConflict:"user_id,cycle_index"});
+    if(error)throw error;
+    setCloudStatus("Saved "+record.cycle_name+" and its document links to the cloud.",true);
+  }catch(e){console.error(e);setCloudStatus("Cloud save failed: "+(e.message||e));}
+}
+async function loadFromCloud(){
+  const user=await requireUser();if(!user)return;
+  try{
+    const {data:rec,error}=await sb.from("sar_cycles").select("cycle_name,period,note,fields,api").eq("user_id",user.id).eq("cycle_index",currentCycle+1).single();
+    if(error)throw error;
+    document.getElementById("cycleName").value=rec.cycle_name||("Cycle "+(currentCycle+1));document.getElementById("cyclePeriod").value=rec.period||"";document.getElementById("cycleNote").value=rec.note||"";
+    cycles[currentCycle].api=rec.api||cycles[currentCycle].api;cycles[currentCycle].fields=rec.fields||{};
+    applyCloudFields(rec.fields||{});
+    setCloudStatus("Loaded "+(rec.cycle_name||("Cycle "+(currentCycle+1)))+" from the cloud.",true);
+  }catch(e){setCloudStatus(e.code==="PGRST116"?"No cloud record exists for this cycle yet.":"Cloud load failed: "+(e.message||e));}
+}
+async function loadAllCloudCycles(){
+  const user=await requireUser();if(!user)return;
+  try{
+    const {data:rows,error}=await sb.from("sar_cycles").select("cycle_index,cycle_name,period,note,fields,api").eq("user_id",user.id).order("cycle_index");
+    if(error)throw error;
+    if(!rows.length){setCloudStatus("No cloud cycles found for this account.");return;}
+    rows.forEach(r=>{const i=r.cycle_index-1;if(i>=0&&i<5){cycles[i].name=r.cycle_name||("Cycle "+(i+1));cycles[i].period=r.period||"";cycles[i].note=r.note||"";cycles[i].fields=r.fields||{};cycles[i].api=r.api||cycles[i].api;}});
+    loadCycle(currentCycle);updateFiveCycleSummary();setCloudStatus("Loaded "+rows.length+" saved cycle(s) from the cloud.",true);
+  }catch(e){setCloudStatus("Cloud load failed: "+(e.message||e));}
+}
+
+if(sb){sb.auth.getUser().then(({data})=>{if(data.user)setCloudStatus("Signed in as "+data.user.email,true);});sb.auth.onAuthStateChange((_event,session)=>{if(session?.user)setCloudStatus("Signed in as "+session.user.email,true);});}
+setTimeout(addDocumentActions,800);
+</script>
+</body>
+</html>
