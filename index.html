@@ -32,7 +32,7 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 .note{background:#fff8df;border-left:4px solid #d4a72c;padding:10px 12px;margin:10px 0}
 .score{font-size:18px;font-weight:700;color:var(--green)}
 .hidden{display:none}.section{display:none}.section.active{display:block}
-.signature{border:1px dashed #9aa9ba;padding:14px;background:#fafcfe}.doc-cell{min-width:190px;background:#fbfdff}.support-doc{font-size:12px!important;padding:4px!important}.doc-status{font-size:11px;color:#287d5a;margin-top:4px;line-height:1.25}
+.signature{border:1px dashed #9aa9ba;padding:14px;background:#fafcfe}.doc-cell{min-width:190px;width:190px;background:#fbfdff;vertical-align:top}.action-cell{min-width:90px;width:90px;white-space:nowrap;vertical-align:top}.support-doc{font-size:12px!important;padding:4px!important;display:block;max-width:180px}.doc-status{font-size:11px;color:#287d5a;margin-top:4px;line-height:1.25}
 @media(max-width:800px){.grid,.grid3{grid-template-columns:1fr}nav{top:88px}.card{padding:15px}table{display:block;overflow:auto}}
 @media print{header,nav,.toolbar,.no-print{display:none!important}body{background:#fff}.card{box-shadow:none;border:0;page-break-inside:avoid}main{max-width:none;margin:0}.section{display:block!important}}
 .auth-gate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#17365d,#2b6da3)}
@@ -48,6 +48,7 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 
 #fiveSummary table{min-width:900px}
 #fiveSummary .total-row td,#fiveSummary .grand-row td{font-weight:700;background:#edf3f9}
+#fiveSummary input.calculated-cell{background:#edf3f9;font-weight:700;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -179,90 +180,115 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 <section id="teaching" class="section">
 <div class="card">
 <h2>PART B: Academic Performance Indicators (API)</h2>
-<p class="note">Please see ‘Guidelines for computing API score’ available in the VU website.</p>
-<h3>CATEGORY 1: TEACHING, LEARNING AND EVALUATION RELATED ACTIVITIES</h3><div class="note"><b>Supporting documents:</b> Upload evidence against each relevant teaching, examination, or innovative-teaching entry.</div>
-<h3>I. Direct Teaching — A. Lectures (L), seminars (S), tutorials (T), practical (P), contact hours (C), field work (F) undertaken taken as percentage of lectures allocated.</h3>
-<table id="teachingTable"><thead><tr><th>Sl.No.</th><th>Course/Paper</th><th>Level</th><th>Mode of Teaching #</th><th>Class allotted as per schedule</th><th>No. of Classes conducted</th><th>% of classes/Practical taken as per record (Auto)</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<p class="note">Please see ‘Guidelines for computing Academic performance indicators (API)’ in the VU website.</p>
+<h3>CATEGORY 1: TEACHING, LEARNING AND EVALUATION RELATED ACTIVITIES</h3>
+<div class="note"><b>Supporting documents:</b> Upload the relevant evidence against each entry.</div>
+<h3>I. Direct Teaching:</h3>
+<h4>A. Lectures, seminars, tutorials, practical, contact hours undertaken taken as percentage of lectures allocated.</h4>
+<table id="teachingTable"><thead><tr><th>Sl. No.</th><th>Course</th><th>Paper</th><th>Mode of Teaching #</th><th>No. of Class allotted as per schedule</th><th>No. of Classes conducted as per academic record*</th><th>% of classes taken as per record*</th><th>Actual hours spent per academic year</th><th>API Score (Actual hours spent per academic year ÷7.5)</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
 <button class="btn primary" onclick="addTeaching()">+ Add teaching row</button>
-<div class="grid3">
-<div class="field"><label>API — Classes taken</label><input id="apiClasses" type="number" value="70"></div>
-<div class="field"><label>Teaching load in excess of UGC norms / Special Lectures / Classes taken at study centre other than VU</label><input value="NIL"></div>
-<div class="field"><label>Maximum Score: Assistant professor / Associate / Professor</label><input value="70 / 60 / 60" readonly></div>
-</div>
+<p class="note"><b>Automatic calculation:</b> % of classes taken = (Classes conducted ÷ Classes allotted) × 100. API Score = Actual hours spent per academic year ÷ 7.5. Both fields are calculated automatically.</p>
+<p>#Lecture (L), Tutorial (T), Practical (P), Project supervision (Ps), Field Work (F),</p>
+<p>*No score will be given if the % of classes taken is below 75%. <b>Maximum Score:</b> Assistant professor-70, Associate -60, Professor – 60</p>
 </div>
 
 <div class="card">
 <h3>B. Examination duties (question paper setting, Invigilation, evaluation of answer scripts) as per allotment</h3>
-<table id="examTable"><thead><tr><th>Sl. No.</th><th>Type of Examination duties</th><th>Duties Assigned</th><th>Extent to which carried out (%)</th><th>API Score</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<table id="examTable"><colgroup><col style="width:60px"><col style="min-width:260px"><col style="width:220px"><col style="width:180px"><col style="width:210px"><col style="width:100px"></colgroup><thead><tr><th>Sl. No.</th><th>Type of Examination duties</th><th>Actual hours spent per academic year</th><th>API Score (Actual hours spent per academic year ÷10)</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
 <button class="btn primary" onclick="addExam()">+ Add examination duty</button>
 <p><b>Maximum Score:</b> Assistant professor-20 Associate -20 Professor – 10</p>
 </div>
 
 <div class="card">
 <h3>C. Innovative Teaching - learning methodologies, updating of subject contents/courses, mentoring etc.</h3>
-<table id="innovTable"><thead><tr><th>Sl. No.</th><th>Short description</th><th>API Score</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<table id="innovTable"><colgroup><col style="width:60px"><col style="min-width:420px"><col style="width:220px"><col style="width:180px"><col style="width:210px"><col style="width:100px"></colgroup><thead><tr><th>Sl. No.</th><th>Short description</th><th>Actual hours spent per academic year</th><th>API Score (Actual hours spent per academic year ÷10)</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
 <button class="btn primary" onclick="addInnov()">+ Add activity</button>
-<p><b>Maximum Score:</b> Assistant professor-10 Associate -15 Professor – 20</p>
+<p><b>Maximum Score:</b> Assistant professor-10, Associate -15, Professor – 20</p>
 </div>
 </section>
 
 <section id="professional" class="section">
 <div class="card">
 <h2>CATEGORY II: PROFESSIONAL DEVELOPMENT, CO-CURRICULAR AND EXTENSION ACTIVITIES</h2>
-<div class="note"><b>Supporting documents:</b> Upload certificates, participation records, appointment/committee orders, activity reports, training certificates, or other supporting material against the relevant Category II entry.</div>
-<table id="profTable"><thead><tr><th>Sl No.</th><th>Nature of Activity</th><th>Maximum API Score</th><th>Actual activity / hours / details</th><th>API Score</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
-<button class="btn primary" onclick="addProf()">+ Add activity</button>
-<p class="score">Category II Total API Score: <span id="profTotal">45</span></p>
+<div class="note"><b>Supporting documents:</b> Upload the relevant certificate, order, report or other evidence against each activity.</div>
+<p class="note"><b>Automatic calculation:</b> API Score = Actual hours spent per academic year ÷ 10. The API Score field is calculated automatically in sections A, B and C.</p>
+
+<h3>A. Student related co-curricular, extension and field-based activities.</h3>
+<table id="profATable"><thead><tr><th>Sl No.</th><th>Nature of Activity</th><th>Maximum API Score</th><th>Actual hours spent per academic year</th><th>API Score (Actual hours spent per academic year ÷ 10)</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addProfA()">+ Add Category II-A activity</button>
+
+<h3>B. Contribution to corporate life and management of the department and institution through participation in academic and administrative committees and responsibilities.</h3>
+<table id="profBTable"><thead><tr><th>Sl No.</th><th>Nature of Activity</th><th>Maximum API Score</th><th>Actual hours spent per academic year</th><th>API Score (Actual hours spent per academic year ÷ 10)</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addProfB()">+ Add Category II-B activity</button>
+
+<h3>C. Professional Development activities (such as participation in seminars, conferences, short term training courses, industrial experience, talks, lectures in refresher / faculty development courses, dissemination and general articles and any other contribution)</h3>
+<table id="profCTable"><thead><tr><th>Sl No.</th><th>Nature of Activity</th><th>Maximum API Score</th><th>Actual hours spent per academic year</th><th>API Score (Actual hours spent per academic year ÷ 10)</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addProfC()">+ Add Category II-C activity</button>
+
+<p><b>Total Score:</b> 45</p>
+<p><b>Minimum API Score:</b> 50 per Assessment period Assistant professor, Associate and 100 per Assessment period Professor stage 5 to stage 6</p>
 </div>
 </section>
 
 <section id="research" class="section">
 <div class="card">
-<h2>CATEGORY–3: RESEARCH, PUBLICATIONS AND ACADEMIC CONTRIBUTION</h2><div class="note"><b>Supporting documents:</b> Upload publications, certificates, project documents, award letters, presentation certificates, research-guidance evidence, or other supporting material against the relevant entry.</div>
-<h3>A) Published papers in journals</h3>
-<table id="papersTable"><thead><tr><th>Sl.</th><th>Title of the paper</th><th>Journal with Vol., Page No., date/year of publication</th><th>ISSN No.</th><th>Peer reviewed / Indexed / Impact factor</th><th>No. of co-authors</th><th>First / corresponding author</th><th>API Score of paper</th><th>API Score Obtained</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<h2>CATEGORY–3: RESEARCH, PUBLICATIONS AND ACADEMIC CONTRIBUTION</h2>
+<div class="note"><b>Supporting documents:</b> Upload the relevant publication, project, award, guidance, presentation, e-learning or other evidence against each entry.</div>
+
+<h3>A) Published papers in journals:</h3>
+<table id="papersTable"><thead><tr><th>Sl.</th><th>Title of the paper</th><th>Journal With Vol., Page No, date/year of publication*</th><th>ISSN No.</th><th>Whether peer reviewed/ Indexed / Impact factor, if any</th><th>No. of co authors</th><th>Whether You are first author / corresponding author</th><th>API Score of the paper</th><th>API Score Obtained</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
 <button class="btn primary" onclick="addPaper()">+ Add paper</button>
+<p>* Only UGC enlisted Journals will be considered for computing API Score.</p>
 </div>
 
 <div class="card">
-<h3>B (i) Articles/ Chapters published in Books</h3>
-<div class="field"><label>Entries</label><textarea>NA</textarea></div>
-<h3>B (ii) Books published as single author or as editor</h3>
-<table id="booksTable"><thead><tr><th>Sl.</th><th>Title of the book</th><th>Publisher & ISSN / ISBN No. with page No, date/year</th><th>National / International / State level</th><th>Peer reviewed</th><th>No. of co-authors</th><th>Main author</th><th>API Score</th><th>API Score obtained</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<h3>B i) Books published as author or as editor</h3>
+<table id="booksTable"><thead><tr><th>Sl.No</th><th>Title of the book</th><th>Publisher with page no., date / year of publication</th><th>ISSN / ISBN No.</th><th>Whether peer reviewed</th><th>National/International/State level Publication</th><th>No. of co authors</th><th>Whether You are main author of the book</th><th>API Score of the book</th><th>API Score Obtained</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
 <button class="btn primary" onclick="addBook()">+ Add book</button>
 
-<h3>C) I) Research Projects and Consultancies</h3>
-<table id="projectsTable"><thead><tr><th>Sl.</th><th>Title</th><th>Agency</th><th>Period</th><th>Grant/Amount mobilized (Rs. lakh)</th><th>PI / Co-PI</th><th>API score</th><th>API score obtained</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<h3>ii) Articles/ Chapters published in Books:</h3>
+<table id="articlesTable"><thead><tr><th>Sl.</th><th>Title of the article and (book)</th><th>Publisher, & with page No, date / year of publication</th><th>ISSN / ISBN</th><th>National /International / State level publication</th><th>Whether Peer reviewed</th><th>No. Of Co authors</th><th>Whether you are the main author</th><th>API Score for the articles</th><th>API Score obtained</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addArticle()">+ Add article/chapter</button>
+</div>
+
+<div class="card">
+<h3>C) i) Research Projects</h3>
+<table id="projectsTable"><thead><tr><th>Sl.</th><th>Title</th><th>Agency</th><th>Period</th><th>Grant/Amount Mobilized (Rs. lakh)</th><th>PI / Co-PI</th><th>API score</th><th>API score obtained</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
 <button class="btn primary" onclick="addProject()">+ Add project</button>
 
-<h3>C) II) Projects Outcome / Outputs</h3>
-<table id="outputsTable"><thead><tr><th>Sl.</th><th>Title</th><th>Patent / Technology transfer / Product / Process / Major Policy document...</th><th>Level</th><th>Period</th><th>API Score</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
-<button class="btn primary" onclick="addOutput()">+ Add output</button>
+<h3>ii) Consultancies</h3>
+<table id="consultanciesTable"><thead><tr><th>Sl.</th><th>Title</th><th>Agency</th><th>Period</th><th>Grant/Amount mobilized (Rs. lakh)</th><th>Consultant / Co-Consultant</th><th>API score</th><th>API score obtained</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addConsultancy()">+ Add consultancy</button>
 
+<h3>iii) Projects Outcome / Outputs</h3>
+<table id="outputsTable"><thead><tr><th>Sl No.</th><th>Patent / Technology transfer / Product / Process / Major Policy document prepared for international bodies like WHO/UNO/UNESCO/UNICEF/ etc. Central / State Govt./Local Bodies</th><th>Title</th><th>National / International</th><th>Period</th><th>API Score</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
+<button class="btn primary" onclick="addOutput()">+ Add output</button>
+</div>
+
+<div class="card">
 <h3>D) Research Guidance</h3>
-<table id="guidanceTable"><thead><tr><th>Level of guidance</th><th>Number enrolled</th><th>Thesis Submitted *</th><th>Degree Awarded *</th><th>API score</th><th>API score obtained</th><th>Supporting Document</th></tr></thead><tbody>
-<tr><td><input value="M.Phil."></td><td><input value="2"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td><td class="doc-cell"><input type="file" class="support-doc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png" onchange="cloudHandleDocument(this)"><div class="doc-status"></div></td></tr>
-<tr><td><input value="Ph.D."></td><td><input value="3"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td><td><input value="NA"></td><td class="doc-cell"><input type="file" class="support-doc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png" onchange="cloudHandleDocument(this)"><div class="doc-status"></div></td></tr>
+<table id="guidanceTable"><thead><tr><th>Level of guidance</th><th>Number enrolled</th><th>Thesis Submitted *</th><th>Degree Awarded *</th><th>API score</th><th>Supporting Document</th></tr></thead><tbody>
+<tr><td><input value="M. Phil"></td><td><input></td><td><input></td><td><input></td><td><input></td><td class="doc-cell"><input type="file" class="support-doc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png" onchange="cloudHandleDocument(this)"><div class="doc-status"></div></td></tr>
+<tr><td><input value="Ph. D"></td><td><input></td><td><input></td><td><input></td><td><input></td><td class="doc-cell"><input type="file" class="support-doc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png" onchange="cloudHandleDocument(this)"><div class="doc-status"></div></td></tr>
 </tbody></table>
 <p>*Please mention year of submission or award</p>
 </div>
 
 <div class="card">
-<h3>E. Fellowships, Awards and Invited lectures Delivered in Conferences/Seminars</h3>
-<h4>(E) I. Fellowships / Awards</h4>
-<table id="awardsTable"><thead><tr><th>Sl. No.</th><th>Title of the Award</th><th>Award Name with date/year</th><th>Organized by</th><th>International/National/State/University level</th><th>API score</th><th>Action</th></tr></thead><tbody></tbody></table>
+<h3>E (i) Fellowships / Awards</h3>
+<table id="awardsTable"><thead><tr><th>Sl. No.</th><th>Title of the Award</th><th>Award Name with date/year</th><th>Awarding Organization/Agency</th><th>Whether International/National/State/University level</th><th>API score</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
 <button class="btn primary" onclick="addAward()">+ Add award</button>
 
-<h4>(E) II. Invited lectures / Papers presented in Conferences, Seminars, Workshops, and Symposia</h4>
-<table id="lecturesTable"><thead><tr><th>Sl.</th><th>Title of Lecture / Presented Paper</th><th>Title of Conference/Seminar with date/year</th><th>Organized by</th><th>International/National/State/University level</th><th>API score</th><th>Action</th></tr></thead><tbody></tbody></table>
+<h3>(ii) Invited lectures / Papers presented in Conferences, Seminars, Workshops, and Symposia.</h3>
+<table id="lecturesTable"><thead><tr><th>Sl. No.</th><th>Title of the Lecture / Paper Presented</th><th>Title of the Conference/Seminar with date/year</th><th>Organized by</th><th>Whether International/National/State/University level</th><th>API score</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
 <button class="btn primary" onclick="addLecture()">+ Add lecture</button>
+<p>The score under this sub-category shall be restricted to 20% of the minimum fixed for Category III for any assessment period</p>
 
-<h4>(F) Development of e-learning delivery process/material</h4>
-<table id="elearnTable"><thead><tr><th>Sl.</th><th>Title</th><th>Module with date/year</th><th>Organized by</th><th>API score</th><th>Action</th></tr></thead><tbody></tbody></table>
+<h3>(F) Development of e-learning delivery process/material</h3>
+<table id="elearnTable"><thead><tr><th>Sl. No.</th><th>Title</th><th>Module with date/year</th><th>Name of the Organization</th><th>API score</th><th>Supporting Document</th><th>Action</th></tr></thead><tbody></tbody></table>
 <button class="btn primary" onclick="addElearn()">+ Add e-learning item</button>
 </div>
 </section>
-
 
 <section id="fiveSummary" class="section">
 <div class="card">
@@ -322,10 +348,10 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 <table id="fiveCycleTotals">
 <thead><tr><th>Category</th><th>Cycle 1</th><th>Cycle 2</th><th>Cycle 3</th><th>Cycle 4</th><th>Cycle 5</th><th>5-Cycle Total</th></tr></thead>
 <tbody>
-<tr><td>Category I</td><td class="i1">106.4</td><td class="i2">87.7</td><td class="i3">99.42</td><td class="i4">95.06</td><td class="i5">85.36</td><td id="g1">473.94</td></tr>
-<tr><td>Category II</td><td class="j1">29.8</td><td class="j2">33.4</td><td class="j3">48.2</td><td class="j4">37.8</td><td class="j5">51.6</td><td id="g2">200.8</td></tr>
-<tr><td>Category III</td><td class="k1">63</td><td class="k2">53.5</td><td class="k3">41.5</td><td class="k4">31</td><td class="k5">37</td><td id="g3">226</td></tr>
-<tr class="total-row"><td><b>Categories I + II + III</b></td><td id="t1">199.2</td><td id="t2">174.6</td><td id="t3">189.12</td><td id="t4">163.86</td><td id="t5">173.96</td><td id="gt">900.74</td></tr>
+<tr><td>Category I</td><td><input class="five-cycle-input i1" value="106.4" inputmode="decimal"></td><td><input class="five-cycle-input i2" value="87.7" inputmode="decimal"></td><td><input class="five-cycle-input i3" value="99.42" inputmode="decimal"></td><td><input class="five-cycle-input i4" value="95.06" inputmode="decimal"></td><td><input class="five-cycle-input i5" value="85.36" inputmode="decimal"></td><td><input id="g1" class="calculated-cell" value="473.94" readonly></td></tr>
+<tr><td>Category II</td><td><input class="five-cycle-input j1" value="29.8" inputmode="decimal"></td><td><input class="five-cycle-input j2" value="33.4" inputmode="decimal"></td><td><input class="five-cycle-input j3" value="48.2" inputmode="decimal"></td><td><input class="five-cycle-input j4" value="37.8" inputmode="decimal"></td><td><input class="five-cycle-input j5" value="51.6" inputmode="decimal"></td><td><input id="g2" class="calculated-cell" value="200.8" readonly></td></tr>
+<tr><td>Category III</td><td><input class="five-cycle-input k1" value="63" inputmode="decimal"></td><td><input class="five-cycle-input k2" value="53.5" inputmode="decimal"></td><td><input class="five-cycle-input k3" value="41.5" inputmode="decimal"></td><td><input class="five-cycle-input k4" value="31" inputmode="decimal"></td><td><input class="five-cycle-input k5" value="37" inputmode="decimal"></td><td><input id="g3" class="calculated-cell" value="226" readonly></td></tr>
+<tr class="total-row"><td><b>Categories I + II + III</b></td><td><input id="t1" class="calculated-cell" value="199.2" readonly></td><td><input id="t2" class="calculated-cell" value="174.6" readonly></td><td><input id="t3" class="calculated-cell" value="189.12" readonly></td><td><input id="t4" class="calculated-cell" value="163.86" readonly></td><td><input id="t5" class="calculated-cell" value="173.96" readonly></td><td><input id="gt" class="calculated-cell" value="900.74" readonly></td></tr>
 </tbody></table>
 </div>
 </section>
@@ -419,52 +445,126 @@ awards:[], lectures:[
 
 function inp(v="", type="text"){return `<input type="${type}" value="${String(v??"").replace(/"/g,'&quot;')}">`}
 function docCell(){return `<td class="doc-cell"><input type="file" class="support-doc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png" onchange="cloudHandleDocument(this)"><div class="doc-status"></div></td>`}
-function row(cells, action=true, upload=false){return `<tr>${cells.map(x=>`<td>${inp(x)}</td>`).join("")}${upload?docCell():""}${action?'<td><button class="btn danger" onclick="removeRow(this)">Remove</button></td>':''}</tr>`}
+function row(cells, action=true, upload=false){return `<tr>${cells.map(x=>`<td>${inp(x)}</td>`).join("")}${upload?docCell():""}${action?'<td class="action-cell"><button class="btn danger" type="button" onclick="removeRow(this)">Remove</button></td>':''}</tr>`}
+function rowIBC(cells){return `<tr>${cells.map(x=>`<td>${inp(x)}</td>`).join("")}<td class="doc-cell"><input type="file" class="support-doc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png" onchange="cloudHandleDocument(this)"><div class="doc-status"></div></td><td class="action-cell"><button class="btn danger" type="button" onclick="removeRow(this)">Remove</button></td></tr>`}
 function render(tableId, rows, upload=false){document.querySelector(`#${tableId} tbody`).innerHTML=rows.map(r=>row(r,true,upload)).join("")}
-render("teachingTable",data.teaching,true); render("examTable",data.exams,true); render("innovTable",data.innov,true); render("profTable",data.prof,true); render("papersTable",data.papers,true); render("lecturesTable",data.lectures,true);
-enhanceTeachingRows();
+const pdfTeaching = data.teaching.map((r,i)=>{
+  const course=r[0]||"", paper=r[1]||"", mode=r[3]||"", allotted=r[4]||"", conducted=r[5]||"";
+  return [String(i+1),course,paper,mode,allotted,conducted,"",r[6]||"",""];
+});
+const pdfExams = data.exams.map((r,i)=>[String(i+1), r[1]||"", r[2]||"", ""]);
+const pdfInnov = data.innov.map((r,i)=>[String(i+1), r[1]||"", r[2]||"", ""]);
+const pdfProfA = [
+ ["1", "(i) Discipline related co-curricular activities (e.g. remedial classes, career counselling, study visit, student seminar and other events.)", "15", "", ""],
+ ["2", "(ii) Other co-curricular activities (Cultural, Sports, NSS, NCC etc.)", "", "", ""],
+ ["3", "(iii) Extension and dissemination activities (public /popular lectures/talks/seminars etc.)", "", "", ""]
+];
+const pdfProfB = [
+ ["1", "i). Administrative responsibility (including as Dean / Principal / Chairperson / Convener / Teacher-in-charge/similar other duties that require regular office hrs for its discharge)", "15", "", ""],
+ ["2", "(ii). Participation in Board of Studies, Academic and Administrative Committees", "", "", ""]
+];
+const pdfProfC = [["1", "Professional Development activities (such as participation in seminars, conferences, short term training courses, industrial experience, talks, lectures in refresher / faculty development courses, dissemination and general articles and any other contribution)", "15", "", ""]];
+const pdfPapers=data.papers.map(r=>[r[0]||"",r[1]||"",r[2]||"",r[3]||"",r[4]||"",r[5]||"",r[6]||"",r[7]||"",r[8]||""]);
+const pdfBooks=[];
+const pdfArticles=[];
+const pdfProjects=[];
+const pdfConsultancies=[];
+const pdfOutputs=[];
+const pdfAwards=[];
+const pdfLectures=data.lectures.map(r=>[r[0]||"",r[1]||"",r[2]||"",r[3]||"",r[4]||"",r[5]||""]);
+const pdfElearn=[];
+render("teachingTable",pdfTeaching,true); document.querySelector("#examTable tbody").innerHTML=pdfExams.map(r=>rowIBC(r)).join(""); document.querySelector("#innovTable tbody").innerHTML=pdfInnov.map(r=>rowIBC(r)).join(""); render("profATable",pdfProfA,true); render("profBTable",pdfProfB,true); render("profCTable",pdfProfC,true); render("papersTable",pdfPapers,true); render("booksTable",pdfBooks,true); render("articlesTable",pdfArticles,true); render("projectsTable",pdfProjects,true); render("consultanciesTable",pdfConsultancies,true); render("outputsTable",pdfOutputs,true); render("awardsTable",pdfAwards,true); render("lecturesTable",pdfLectures,true); render("elearnTable",pdfElearn,true);
+enhanceTeachingRows(); enhanceAllCategoryII();
+
 function addQual(){document.querySelector("#qualTable tbody").insertAdjacentHTML("beforeend",row(["","","",""]));}
-function addTeaching(){document.querySelector("#teachingTable tbody").insertAdjacentHTML("beforeend",row(["","","","","","",""],true,true)); enhanceTeachingRows();}
+function addTeaching(){const n=document.querySelectorAll("#teachingTable tbody tr").length+1;document.querySelector("#teachingTable tbody").insertAdjacentHTML("beforeend",row([String(n),"","","","","","","",""],true,true)); enhanceTeachingRows();}
 function extractHours(value){
   const nums=String(value??"").match(/\d+(?:\.\d+)?/g);
   if(!nums||!nums.length)return null;
   return parseFloat(nums[nums.length-1]);
 }
 function calculateTeachingPercent(input){
-  const tr=input.closest("tr");
-  if(!tr)return;
+  const tr=input.closest("tr"); if(!tr)return;
   const cells=tr.querySelectorAll("td");
-  const allotted=cells[4]?.querySelector("input");
-  const conducted=cells[5]?.querySelector("input");
-  const percent=cells[6]?.querySelector("input");
+  const allotted=cells[4]?.querySelector("input"), conducted=cells[5]?.querySelector("input"), percent=cells[6]?.querySelector("input");
   if(!allotted||!conducted||!percent)return;
   const a=extractHours(allotted.value), c=extractHours(conducted.value);
   if(a===null||c===null||a<=0){percent.value="";return;}
-  const pct=(c/a)*100;
-  percent.value=Math.round(pct*100)/100;
+  percent.value=Math.round((c/a*100)*100)/100;
+}
+function calculateTeachingAPI(input){
+  const tr=input.closest("tr"); if(!tr)return;
+  const cells=tr.querySelectorAll("td");
+  const hours=cells[7]?.querySelector("input"), api=cells[8]?.querySelector("input");
+  if(!hours||!api)return;
+  const h=parseFloat(String(hours.value).replace(/[^0-9.\-]/g,""));
+  api.readOnly=true; api.classList.add("auto-calculated");
+  api.value=Number.isFinite(h)?(Math.round((h/7.5)*100)/100):"";
 }
 function enhanceTeachingRows(){
   document.querySelectorAll("#teachingTable tbody tr").forEach(tr=>{
-    const cells=tr.querySelectorAll("td");
-    if(cells.length<8)return;
-    const allotted=cells[4]?.querySelector("input");
-    const conducted=cells[5]?.querySelector("input");
-    const percent=cells[6]?.querySelector("input");
-    if(!allotted||!conducted||!percent)return;
-    percent.readOnly=true;
-    percent.classList.add("auto-calculated");
-    allotted.addEventListener("input",()=>calculateTeachingPercent(allotted));
-    conducted.addEventListener("input",()=>calculateTeachingPercent(conducted));
-    calculateTeachingPercent(allotted);
+    const cells=tr.querySelectorAll("td"); if(cells.length<11)return;
+    const allotted=cells[4]?.querySelector("input"), conducted=cells[5]?.querySelector("input"), percent=cells[6]?.querySelector("input"), hours=cells[7]?.querySelector("input"), api=cells[8]?.querySelector("input");
+    if(!allotted||!conducted||!percent||!hours||!api)return;
+    percent.readOnly=true; percent.classList.add("auto-calculated");
+    api.readOnly=true; api.classList.add("auto-calculated");
+    allotted.addEventListener("input",()=>calculateTeachingPercent(allotted)); conducted.addEventListener("input",()=>calculateTeachingPercent(conducted));
+    hours.addEventListener("input",()=>calculateTeachingAPI(hours));
+    calculateTeachingPercent(allotted); calculateTeachingAPI(hours);
   });
 }
+function calculateCategoryIIAPI(input){
+  const tr=input.closest("tr"); if(!tr)return;
+  const cells=tr.querySelectorAll("td");
+  const hours=cells[3]?.querySelector("input"), api=cells[4]?.querySelector("input");
+  if(!hours||!api)return;
+  const h=parseFloat(String(hours.value).replace(/[^0-9.\-]/g,""));
+  api.readOnly=true; api.classList.add("auto-calculated");
+  api.value=Number.isFinite(h)?(Math.round((h/10)*100)/100):"";
+}
+function enhanceCategoryIIRows(tableId){
+  document.querySelectorAll(`#${tableId} tbody tr`).forEach(tr=>{
+    const cells=tr.querySelectorAll("td"); if(cells.length<7)return;
+    const hours=cells[3]?.querySelector("input"), api=cells[4]?.querySelector("input");
+    if(!hours||!api)return;
+    api.readOnly=true; api.classList.add("auto-calculated");
+    hours.addEventListener("input",()=>calculateCategoryIIAPI(hours));
+    calculateCategoryIIAPI(hours);
+  });
+}
+function enhanceAllCategoryII(){["profATable","profBTable","profCTable"].forEach(enhanceCategoryIIRows);}
 
-function addExam(){document.querySelector("#examTable tbody").insertAdjacentHTML("beforeend",row(["","","","",""],true,true));}
-function addInnov(){document.querySelector("#innovTable tbody").insertAdjacentHTML("beforeend",row(["","",""],true,true));}
-function addProf(){document.querySelector("#profTable tbody").insertAdjacentHTML("beforeend",row(["","","","",""] ,true,true));}
+function calculateIBCAPI(input){
+  const tr=input.closest("tr"); if(!tr)return;
+  const cells=tr.querySelectorAll("td");
+  const hours=cells[2]?.querySelector("input"), api=cells[3]?.querySelector("input");
+  if(!hours||!api)return;
+  const h=parseFloat(String(hours.value||"").replace(/[^0-9.\-]/g,""));
+  api.readOnly=true; api.classList.add("auto-calculated");
+  api.value=Number.isFinite(h)?(Math.round((h/10)*100)/100):"";
+}
+function enhanceCategoryIBC(){
+  ["#examTable tbody tr","#innovTable tbody tr"].forEach(sel=>document.querySelectorAll(sel).forEach(tr=>{
+    const cells=tr.querySelectorAll("td");
+    if(cells.length!==6)return;
+    const hours=cells[2]?.querySelector("input"), api=cells[3]?.querySelector("input"), doc=cells[4]?.querySelector(".support-doc"), action=cells[5]?.querySelector("button");
+    if(!hours||!api||!doc||!action)return;
+    api.readOnly=true; api.classList.add("auto-calculated");
+    if(!hours.dataset.apiBound){hours.addEventListener("input",()=>calculateIBCAPI(hours)); hours.dataset.apiBound="1";}
+    calculateIBCAPI(hours);
+  }));
+}
+enhanceCategoryIBC();
+function addExam(){const n=document.querySelectorAll("#examTable tbody tr").length+1;document.querySelector("#examTable tbody").insertAdjacentHTML("beforeend",rowIBC([String(n), "", "", ""]));enhanceCategoryIBC();}
+function addInnov(){const n=document.querySelectorAll("#innovTable tbody tr").length+1;document.querySelector("#innovTable tbody").insertAdjacentHTML("beforeend",rowIBC([String(n), "", "", ""]));enhanceCategoryIBC();}
+function addProfA(){const n=document.querySelectorAll("#profATable tbody tr").length+1;document.querySelector("#profATable tbody").insertAdjacentHTML("beforeend",row([String(n),"","", "", ""],true,true));enhanceCategoryIIRows("profATable");}
+function addProfB(){const n=document.querySelectorAll("#profBTable tbody tr").length+1;document.querySelector("#profBTable tbody").insertAdjacentHTML("beforeend",row([String(n),"","", "", ""],true,true));enhanceCategoryIIRows("profBTable");}
+function addProfC(){const n=document.querySelectorAll("#profCTable tbody tr").length+1;document.querySelector("#profCTable tbody").insertAdjacentHTML("beforeend",row([String(n),"","", "", ""],true,true));enhanceCategoryIIRows("profCTable");}
 function addPaper(){document.querySelector("#papersTable tbody").insertAdjacentHTML("beforeend",row(["","","","","","","","",""],true,true));}
-function addBook(){document.querySelector("#booksTable tbody").insertAdjacentHTML("beforeend",row(["","","","","","","","",""],true,true));}
+function addBook(){document.querySelector("#booksTable tbody").insertAdjacentHTML("beforeend",row(["","","","","","","","","",""],true,true));}
+function addArticle(){document.querySelector("#articlesTable tbody").insertAdjacentHTML("beforeend",row(["","","","","","","","","",""],true,true));}
 function addProject(){document.querySelector("#projectsTable tbody").insertAdjacentHTML("beforeend",row(["","","","","","","",""],true,true));}
+function addConsultancy(){document.querySelector("#consultanciesTable tbody").insertAdjacentHTML("beforeend",row(["","","","","","","",""],true,true));}
 function addOutput(){document.querySelector("#outputsTable tbody").insertAdjacentHTML("beforeend",row(["","","","","",""],true,true));}
 function addAward(){document.querySelector("#awardsTable tbody").insertAdjacentHTML("beforeend",row(["","","","","",""],true,true));}
 function addLecture(){document.querySelector("#lecturesTable tbody").insertAdjacentHTML("beforeend",row(["","","","","",""],true,true));}
@@ -480,32 +580,104 @@ function addDocumentActions(){document.querySelectorAll(".doc-cell").forEach(cel
 setInterval(addDocumentActions,1000);
 
 
+
+function updateCategoryCycleSummaries(){
+  const parseCell = el => {
+    const v = parseFloat(String(el?.value ?? '').replace(/[^0-9.\-]/g,''));
+    return Number.isFinite(v) ? v : 0;
+  };
+  const fmt = n => Number(n||0).toFixed(2).replace(/\.00$/,'').replace(/(\.\d)0$/,'$1');
+
+  ['summaryCat1','summaryCat2','summaryCat3'].forEach(id=>{
+    const table=document.getElementById(id); if(!table)return;
+    const rows=Array.from(table.querySelectorAll('tbody tr'));
+    const totalRow=table.querySelector('tbody tr.total-row');
+    const grandRow=table.querySelector('tbody tr.grand-row');
+    if(!totalRow || !grandRow)return;
+    const cycleCount=5;
+    const cycleTotals=[];
+    for(let c=0;c<cycleCount;c++){
+      let sum=0;
+      rows.forEach(r=>{
+        if(r===totalRow || r===grandRow)return;
+        const cell=r.querySelectorAll('td')[c + (id==='summaryCat3'?1:2)];
+        const input=cell?.querySelector('input');
+        if(input)sum += parseCell(input);
+      });
+      cycleTotals.push(Math.round(sum*100)/100);
+      const totalInput=totalRow.querySelectorAll('td')[c + (id==='summaryCat3'?1:2)]?.querySelector('input');
+      if(totalInput){
+        totalInput.value=fmt(cycleTotals[c]);
+        totalInput.readOnly=true;
+        totalInput.classList.add('calculated-cell');
+      }
+    }
+    const grand=cycleTotals.reduce((a,b)=>a+b,0);
+    const grandInput=grandRow.querySelector('input');
+    if(grandInput){
+      grandInput.value=fmt(Math.round(grand*100)/100);
+      grandInput.readOnly=true;
+      grandInput.classList.add('calculated-cell');
+    }
+  });
+}
+function enhanceCategorySummaryInputs(){
+  ['summaryCat1','summaryCat2','summaryCat3'].forEach(id=>{
+    const table=document.getElementById(id); if(!table)return;
+    table.querySelectorAll('tbody tr:not(.total-row):not(.grand-row) input').forEach(input=>{
+      input.addEventListener('input',updateCategoryCycleSummaries);
+    });
+  });
+  updateCategoryCycleSummaries();
+}
+
 function updateFiveSummaryTable(){
   const ids=["summaryCat1","summaryCat2","summaryCat3"];
-  const totals=[];
-  ids.forEach(id=>{
-    const table=document.getElementById(id); if(!table)return;
-    const rows=table.querySelectorAll("tbody tr:not(.total-row):not(.grand-row)");
-    const vals=[1,2,3,4,5].map(col=>{
-      let sum=0;
-      rows.forEach(r=>{const v=parseFloat(r.querySelectorAll("input")[col-1]?.value);if(Number.isFinite(v))sum+=v;});
-      return Math.round(sum*100)/100;
-    });
-    totals.push(vals);
-    const totalRow=table.querySelector("tr.total-row");
-    if(totalRow)totalRow.querySelectorAll("input").forEach((x,i)=>x.value=vals[i]);
+  const fmt=n=>Number(n||0).toFixed(2).replace(/\.00$/,'').replace(/(\.\d)0$/,'$1');
+
+  // The individual Category I/II/III 5-cycle cells in the final
+  // "5-Cycle Category Totals" table are intentionally editable.
+  // Their row sums produce each category's 5-Cycle Total, while
+  // the column sums produce Categories I + II + III for each cycle.
+  ["i","j","k"].forEach((prefix, rowIndex)=>{
+    let rowSum=0;
+    for(let i=1;i<=5;i++){
+      const el=document.querySelector("."+prefix+i);
+      const v=parseFloat(el?.value);
+      if(Number.isFinite(v)) rowSum+=v;
+    }
+    const totalEl=document.getElementById("g"+(rowIndex+1));
+    if(totalEl){
+      totalEl.value=fmt(Math.round(rowSum*100)/100);
+      totalEl.readOnly=true;
+      totalEl.classList.add("calculated-cell");
+    }
   });
-  if(totals.length<3)return;
+
   const all=[];
-  for(let i=0;i<5;i++){
-    all[i]=totals[0][i]+totals[1][i]+totals[2][i];
-    document.getElementById("t"+(i+1)).textContent=all[i].toFixed(2).replace(/\.00$/,"");
+  for(let i=1;i<=5;i++){
+    let sum=0;
+    ["i","j","k"].forEach(prefix=>{
+      const el=document.querySelector("."+prefix+i);
+      const v=parseFloat(el?.value);
+      if(Number.isFinite(v)) sum+=v;
+    });
+    all.push(Math.round(sum*100)/100);
+    const cycleTotal=document.getElementById("t"+i);
+    if(cycleTotal){
+      cycleTotal.value=fmt(all[i-1]);
+      cycleTotal.readOnly=true;
+      cycleTotal.classList.add("calculated-cell");
+    }
   }
-  totals.forEach((v,i)=>{
-    const total=v.reduce((a,b)=>a+b,0);
-    document.getElementById("g"+(i+1)).textContent=total.toFixed(2).replace(/\.00$/,"");
-  });
-  document.getElementById("gt").textContent=all.reduce((a,b)=>a+b,0).toFixed(2).replace(/\.00$/,"");
+
+  const grand=all.reduce((a,b)=>a+b,0);
+  const grandEl=document.getElementById("gt");
+  if(grandEl){
+    grandEl.value=fmt(Math.round(grand*100)/100);
+    grandEl.readOnly=true;
+    grandEl.classList.add("calculated-cell");
+  }
 }
 function saveFiveSummary(){
   const x={};
@@ -522,6 +694,7 @@ function loadFiveSummary(){
 setTimeout(()=>{
   document.querySelectorAll("#fiveSummary input").forEach(e=>e.addEventListener("input",updateFiveSummaryTable));
   loadFiveSummary();
+  enhanceCategorySummaryInputs();
 },150);
 
 const CYCLE_COUNT=5;
