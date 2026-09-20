@@ -34,7 +34,7 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 .hidden{display:none}.section{display:none}.section.active{display:block}
 .signature{border:1px dashed #9aa9ba;padding:14px;background:#fafcfe}.doc-cell{min-width:190px;width:190px;background:#fbfdff;vertical-align:top}.action-cell{min-width:90px;width:90px;white-space:nowrap;vertical-align:top}.support-doc{font-size:12px!important;padding:4px!important;display:block;max-width:180px}.doc-status{font-size:11px;color:#287d5a;margin-top:4px;line-height:1.25}
 @media(max-width:800px){.grid,.grid3{grid-template-columns:1fr}nav{top:88px}.card{padding:15px}table{display:block;overflow:auto}}
-@media print{header,nav,.toolbar,.no-print{display:none!important}body{background:#fff}.card{box-shadow:none;border:0;page-break-inside:avoid}main{max-width:none;margin:0}.section{display:block!important}}
+@media print{header,nav,.toolbar,.no-print{display:none!important}body{background:#fff}.card{box-shadow:none;border:0;page-break-inside:avoid}main{max-width:none;margin:0}.section{display:block!important}#appShell>main{display:none!important}.print-only{display:block!important}.print-cycle{page-break-before:always}.print-only .section{display:block!important}.print-only .card{page-break-inside:auto}.print-only table{font-size:11px}.print-only input,.print-only textarea,.print-only select{border:0;background:transparent;padding:2px;color:#111} }
 .auth-gate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#17365d,#2b6da3)}
 .auth-card{width:min(460px,100%);background:#fff;border-radius:16px;padding:32px;box-shadow:0 18px 60px #0004}
 .auth-card h1{margin:0 0 6px;color:var(--navy);font-size:28px}.auth-card h2{border:0;margin:0 0 18px;padding:0;font-size:20px}.auth-card p{color:#5b6775;line-height:1.5}.auth-logo{width:64px;height:64px;border-radius:14px;background:#edf3f9;color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;margin-bottom:18px}.auth-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.auth-actions .btn{flex:1;min-width:130px}.auth-status{min-height:22px;margin-top:14px;font-size:13px}.auth-loading{color:#5b6775;text-align:center}
@@ -82,6 +82,7 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 <button data-tab="fiveSummary">5-Cycle Summary</button>
 </nav>
 
+<div id="printAllContainer" class="print-only" style="display:none"></div>
 <main>
 <div class="card no-print" id="cloudPanel">
   <h2>Online CAS Storage</h2>
@@ -94,7 +95,7 @@ td input,td textarea,td select{min-width:90px;padding:6px}
   <button class="btn success" onclick="saveData()">Save local backup</button>
   <button class="btn muted" onclick="loadData()">Load saved data</button>
   <button class="btn danger" onclick="clearData()">Clear saved data</button>
-  <button class="btn primary" onclick="window.print()">Print / Save as PDF</button>
+  <button class="btn primary" onclick="printCompleteCAS()">Print / Save as PDF</button>
 </div>
 
 
@@ -172,7 +173,7 @@ td input,td textarea,td select{min-width:90px;padding:6px}
 <button class="btn primary" onclick="addPartARow('partA_experience',4)">+ Add experience</button>
 
 <p class="note">I declare that the particulars given above are correct to the best of my knowledge and belief.</p>
-<div class="signature"><b>Signature of the Candidate:</b> </div>
+<div class="signature"><b>Signature of the Candidate:</b> Prasenjit Acharya</div>
 </div>
 </div>
 </section>
@@ -808,6 +809,117 @@ function collect(){
  document.querySelectorAll("input,textarea,select").forEach((el,i)=>obj["f"+i]=el.value);
  return obj;
 }
+function copyFormValuesToClone(source, clone){
+  const srcFields=source.querySelectorAll('input,textarea,select');
+  const dstFields=clone.querySelectorAll('input,textarea,select');
+  srcFields.forEach((src,i)=>{
+    const dst=dstFields[i]; if(!dst)return;
+    if(src.type==='checkbox' || src.type==='radio') dst.checked=src.checked;
+    else dst.value=src.value;
+    if(src.type==='file'){
+      const st=src.parentElement.querySelector('.doc-status');
+      const dstSt=dst.parentElement?.querySelector('.doc-status');
+      if(st && dstSt) dstSt.textContent=st.textContent;
+      if(src.dataset.docKey) dst.dataset.docKey=src.dataset.docKey;
+    }
+  });
+}
+
+function cloneSectionForPrint(id, title, cycleIndex){
+  const source=document.getElementById(id); if(!source)return null;
+  const wrapper=document.createElement('div');
+  wrapper.className='print-cycle';
+  const h=document.createElement('h2');
+  h.textContent=title;
+  wrapper.appendChild(h);
+  const clone=source.cloneNode(true);
+  clone.classList.add('active');
+  copyFormValuesToClone(source,clone);
+  wrapper.appendChild(clone);
+  return wrapper;
+}
+
+function printCompleteCAS(){
+  // Save the currently displayed cycle before assembling the complete PDF view.
+  saveCurrentApi();
+  saveCurrentCycle();
+  updateFiveCycleSummary();
+  updateFiveSummaryTable();
+
+  const container=document.getElementById('printAllContainer');
+  container.innerHTML='';
+
+  // Part A is common/general information and is printed once at the beginning.
+  const general=document.getElementById('general');
+  if(general){
+    const intro=document.createElement('div');
+    intro.className='print-cycle';
+    const h=document.createElement('h1');
+    h.textContent='Vidyasagar University — Career Advancement Scheme (CAS)';
+    intro.appendChild(h);
+    const sub=document.createElement('h2');
+    sub.textContent='Part A — General Information';
+    intro.appendChild(sub);
+    const clone=general.cloneNode(true);
+    clone.classList.add('active');
+    copyFormValuesToClone(general,clone);
+    intro.appendChild(clone);
+    container.appendChild(intro);
+  }
+
+  const sections=[
+    ['teaching','Category I — Teaching, Learning and Evaluation Related Activities'],
+    ['professional','Category II — Professional Development, Co-Curricular and Extension Activities'],
+    ['research','Category III — Research, Publications and Academic Contribution'],
+    ['summary','Current Cycle Summary & Declaration']
+  ];
+
+  const originalCycle=currentCycle;
+  for(let i=0;i<CYCLE_COUNT;i++){
+    loadCycle(i);
+    const cycleHeader=document.createElement('div');
+    cycleHeader.className='print-cycle';
+    const ch=document.createElement('h1');
+    ch.textContent=(cycles[i].name||('Cycle '+(i+1)));
+    cycleHeader.appendChild(ch);
+    const cp=document.createElement('p');
+    cp.innerHTML='<strong>Academic Year / Assessment Period:</strong> '+(cycles[i].period||'');
+    cycleHeader.appendChild(cp);
+    if(cycles[i].note) {
+      const cn=document.createElement('p'); cn.innerHTML='<strong>Cycle Note:</strong> '+cycles[i].note; cycleHeader.appendChild(cn);
+    }
+    container.appendChild(cycleHeader);
+    sections.forEach(([id,title])=>{
+      const block=cloneSectionForPrint(id,title,i);
+      if(block)container.appendChild(block);
+    });
+  }
+
+  // Restore the user's currently selected cycle after collecting all cycle views.
+  loadCycle(originalCycle);
+  updateFiveCycleSummary();
+  updateFiveSummaryTable();
+
+  // Append the five-cycle summary only once, at the very end.
+  const five=document.getElementById('fiveSummary');
+  if(five){
+    const block=document.createElement('div');
+    block.className='print-cycle';
+    const h=document.createElement('h1'); h.textContent='5-Cycle Summary'; block.appendChild(h);
+    const clone=five.cloneNode(true);
+    clone.classList.add('active');
+    copyFormValuesToClone(five,clone);
+    block.appendChild(clone);
+    container.appendChild(block);
+  }
+
+  document.body.classList.add('printing-complete-cas');
+  setTimeout(()=>{
+    window.print();
+    setTimeout(()=>{container.innerHTML='';document.body.classList.remove('printing-complete-cas');},500);
+  },100);
+}
+
 function saveData(){saveFiveSummary();saveCurrentApi();saveCurrentCycle();updateFiveSummaryTable();updateFiveCycleSummary();alert("All five annual CAS cycles saved in this browser.")}
 function loadData(){try{const s=JSON.parse(localStorage.getItem(CYCLE_KEY)||"null");if(Array.isArray(s)&&s.length===5)cycles=s;loadCycle(currentCycle);updateFiveCycleSummary();alert("Five-cycle CAS data loaded.");}catch(e){alert("No saved five-cycle CAS data found.");}}
 function clearData(){if(confirm("Clear all five-cycle CAS data saved in this browser?")){localStorage.removeItem(CYCLE_KEY);localStorage.removeItem("VU_SAR_2020_21");localStorage.removeItem("VU_SAR_FIVE_SUMMARY");location.reload();}}
